@@ -1,13 +1,14 @@
 {
-    "name": "ldl-framework/env-builder",
+    "name": "ldl-framework/container-builder",
     "type": "library",
-    "description": "Env builder is a package which collects different env files within a specified directory and compiles them into one single .env file, useful when you have different .env files laying around in different folders and you want to have one single big file that you can load with Symfony's DotEnv loader or other Env loading library.",
+    "description": "Combines different service files in different directories",
     "keywords": [
-        "ENV",
-        "environment",
-	"compiler"
+        "DIC",
+        "Symfony",
+	"compiler",
+	"services"
     ],
-    "homepage": "https://github.com/pthreat/env-builder",
+    "homepage": "https://github.com/pthreat/ldl-container-builder",
     "license": "MIT",
     "authors": [
         {
@@ -25,7 +26,9 @@
         "ldl-framework/file-finder": "^0.0.1",
         "ldl-framework/file-common": "^0.0.1",
         "symfony/dependency-injection": "^5.1",
-        "symfony/config": "^5.1"
+        "symfony/config": "^5.1",
+        "symfony/yaml": "^5.1",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
