@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\Container\Writer;
 
 class ContainerFileWriter implements ContainerFileWriterInterface
@@ -23,6 +25,22 @@ class ContainerFileWriter implements ContainerFileWriterInterface
             return;
         }
 
+        $this->test();
+
+        file_put_contents($this->options->getFilename(), $content);
+    }
+
+    private function test()
+    {
+        if(!$this->options->isMockWrite() && !is_writable($this->options->getFilename())){
+            $msg = sprintf(
+                'File: %s is not writable.',
+                $this->options->getFilename()
+            );
+
+            throw new Exception\FileIsNotWritableException($msg);
+        }
+
         if(
             false === $this->options->isForce() &&
             true === file_exists($this->options->getFilename())
@@ -34,7 +52,5 @@ class ContainerFileWriter implements ContainerFileWriterInterface
 
             throw new Exception\FileAlreadyExistsException($msg);
         }
-
-        file_put_contents($this->options->getFilename(), $content);
     }
 }

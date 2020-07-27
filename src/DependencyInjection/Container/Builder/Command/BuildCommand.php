@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\Container\Builder\Console\Command;
 
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
@@ -117,6 +119,7 @@ class BuildCommand extends SymfonyCommand
     ) : void
     {
         $start = hrtime(true);
+        $findFirst = $input->getOption('find-first');
 
         try{
             $dumpOptions = $input->getOption('dump-options');
@@ -132,7 +135,7 @@ class BuildCommand extends SymfonyCommand
             $finderOptions = ServiceFileFinderOptions::fromArray([
                 'directories' => explode(',', $input->getOption('scan-directories')),
                 'files' => explode(',', $input->getOption('scan-files')),
-                'findFirst' => explode(',', $input->getOption('find-first'))
+                'findFirst' => null !== $findFirst ? explode(',', $findFirst) : []
             ]);
 
             $readerOptions = ServiceReaderOptions::fromArray([

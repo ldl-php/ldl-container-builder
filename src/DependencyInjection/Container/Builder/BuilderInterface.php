@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\Container\Builder;
 
 use LDL\DependencyInjection\Container\Compiler\Exception\CompileErrorException;

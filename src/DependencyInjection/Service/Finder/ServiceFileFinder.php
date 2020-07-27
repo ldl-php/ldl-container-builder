@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\Service\Finder;
 
 use LDL\FS\Finder\Adapter\LocalFileFinder;
