@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\CompilerPass\Command;
 
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;

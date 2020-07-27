@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\CompilerPass\Reader\Validator;
 
 use LDL\FS\Type\AbstractFileType;
@@ -72,6 +74,7 @@ class CompilerPassValidator
             require_once $file->getRealPath();
         }
 
+        var_dump($class);
         /**
          * @var CompilerPassInterface $passInstance
          */

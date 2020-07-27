@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\Container\Compiler;
 
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;

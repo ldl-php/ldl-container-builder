@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\Console;
 
 use LDL\FS\Finder\Adapter\LocalFileFinder;
@@ -8,6 +10,11 @@ use Symfony\Component\Console\Application as SymfonyApplication;
 
 class Console extends SymfonyApplication
 {
+    /**
+     * Console constructor.
+     * @param string $name
+     * @param string $version
+     */
     public function __construct(string $name = 'UNKNOWN', string $version = 'UNKNOWN')
     {
         parent::__construct('<info>[ Services file builder ]</info>', $version);

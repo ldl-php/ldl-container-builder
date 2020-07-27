@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LDL\DependencyInjection\Service\Command;
 
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
