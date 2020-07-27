@@ -1,4 +1,4 @@
-# ldl-services-xml-builder
+# ldl-container-builder
 
 Builds a Symfony container from a collection of service files found in different directories
 The service files themselves can be written in different formats (yml, xml, ini or php)
