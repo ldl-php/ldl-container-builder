@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\Finder\Options;
 
-class ServiceFileFinderOptions
+use LDL\DependencyInjection\Interfaces\OptionsInterface;
+
+class ServiceFileFinderOptions implements OptionsInterface
 {
     /**
      * @var array
@@ -51,6 +53,22 @@ class ServiceFileFinderOptions
             ->setFindFirst($merge['findFirst'])
             ->setExcludedDirectories($merge['excludedDirectories'])
             ->setExcludedFiles($merge['excludedFiles']);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
     }
 
     /**

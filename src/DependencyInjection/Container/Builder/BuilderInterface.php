@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Container\Builder;
 
+use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinderInterface;
 use LDL\DependencyInjection\Container\Compiler\Exception\CompileErrorException;
 use LDL\DependencyInjection\Service\Finder\Exception\NoFilesFoundException as NoServicesFoundException;
 use LDL\DependencyInjection\Container\Writer\Exception\FileAlreadyExistsException;
+use LDL\DependencyInjection\Service\Finder\ServiceFileFinderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface BuilderInterface
@@ -17,4 +19,14 @@ interface BuilderInterface
      * @throws FileAlreadyExistsException
      */
     public function build(): ContainerBuilder;
+
+    /**
+     * @return ServiceFileFinderInterface
+     */
+    public function getFinder() : ServiceFileFinderInterface;
+
+    /**
+     * @return CompilerPassFinderInterface
+     */
+    public function getCompiler() : CompilerPassFinderInterface;
 }

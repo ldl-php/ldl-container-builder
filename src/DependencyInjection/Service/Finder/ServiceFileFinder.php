@@ -68,4 +68,12 @@ class ServiceFileFinder implements ServiceFileFinderInterface
         return $return;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions(): Options\ServiceFileFinderOptions
+    {
+        return $this->options;
+    }
+
 }
