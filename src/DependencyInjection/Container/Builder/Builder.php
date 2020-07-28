@@ -99,4 +99,20 @@ class Builder implements BuilderInterface
 
         return $builder;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFinder() : ServiceFileFinderInterface
+    {
+        return $this->serviceFileFinder;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCompiler() : CompilerPassFinderInterface
+    {
+        return $this->compilerPassFileFinder;
+    }
 }

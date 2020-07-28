@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Finder\Options;
 
-class CompilerPassFinderOptions
+use LDL\DependencyInjection\Interfaces\OptionsInterface;
+
+class CompilerPassFinderOptions implements OptionsInterface
 {
     /**
      * @var array
@@ -36,6 +38,22 @@ class CompilerPassFinderOptions
             ->setExcludedDirectories($merge['excludedDirectories'])
             ->setExcludedFiles($merge['excludedFiles'])
             ->setPattern($merge['pattern']);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
     }
 
     /**

@@ -20,6 +20,9 @@ class CompilerPassFinder implements CompilerPassFinderInterface
         $this->options = $options ?? Options\CompilerPassFinderOptions::fromArray([]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function find(): GenericFileCollection
     {
         $files = LocalFileFinder::findRegex(
@@ -51,5 +54,13 @@ class CompilerPassFinder implements CompilerPassFinderInterface
         }
 
         return $files;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions() : Options\CompilerPassFinderOptions
+    {
+        return $this->options;
     }
 }

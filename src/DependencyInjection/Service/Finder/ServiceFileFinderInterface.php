@@ -14,4 +14,9 @@ interface ServiceFileFinderInterface
      * @throws Exception\NoFilesFoundException
      */
     public function find() : GenericFileCollection;
+
+    /**
+     * @return Options\ServiceFileFinderOptions
+     */
+    public function getOptions(): Options\ServiceFileFinderOptions;
 }
