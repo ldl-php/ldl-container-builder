@@ -11,4 +11,11 @@ interface ContainerFileWriterInterface
      * @throws Exception\FileAlreadyExistsException
      */
     public function write(string $content): void;
+
+    /**
+     * @throws Exception\FileAlreadyExistsException
+     * @throws Exception\FileIsNotWritableException
+     * @throws Exception\DirectoryIsNotWritableException
+     */
+    public function test(): void;
 }

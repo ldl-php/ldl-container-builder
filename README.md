@@ -24,19 +24,25 @@ php bin/build container:build out.xml xml -d /path/to/your/project -l services.x
 php bin/build container:build out.xml xml -d /path/to/your/project -l services.xml -p MyCompilerpass.php
 ```
 
+## Compiler passes
+
+#### IMPORTANT:  As we can't handle whatever you pass into a compiler pass constructor,  every compiler pass you have must extend to LDLAbstractCompilerPass
+
 ### Controlling compiler pass priority and type
 
-For using compiler pass priority and type, make your compiler pass implement the LDLCompilerPassInterface instead of the
-regular Symfony compiler pass
+For using compiler pass priority and type, make your compiler pass extends to LDLAbstractCompilerPass
+
+##### Example 
 
 ```php
 <?php
 
-use LDL\DependencyInjection\CompilerPass\LDLCompilerPassInterface;
+use LDL\DependencyInjection\CompilerPass\LDLAbstractCompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class MyCompilerPass implements LDLCompilerPassInterface{
+class MyCompilerPass extends LDLAbstractCompilerPass
+{
     public function getPriority() : int
     {
         return 0;
