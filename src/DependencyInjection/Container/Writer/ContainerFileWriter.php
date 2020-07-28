@@ -11,6 +11,11 @@ class ContainerFileWriter implements ContainerFileWriterInterface
      */
     private $options;
 
+    /**
+     * @var bool
+     */
+    private $canWrite = false;
+
     public function __construct(Options\ContainerWriterOptions $options=null)
     {
         $this->options = $options ?? Options\ContainerWriterOptions::fromArray([]);
@@ -30,15 +35,33 @@ class ContainerFileWriter implements ContainerFileWriterInterface
         file_put_contents($this->options->getFilename(), $content);
     }
 
-    private function test()
+    /**
+     * {@inheritdoc}
+     */
+    public function test(): void
     {
-        if(!$this->options->isMockWrite() && !is_writable($this->options->getFilename())){
+        if ($this->canWrite || $this->options->isMockWrite()) {
+            return;
+        }
+
+        $file = $this->options->getFilename();
+        $exists = file_exists($file);
+        $isWritable = $exists ? $file : dirname($file);
+        $isDir = is_dir($file);
+
+        if(
+            !$this->options->isMockWrite() &&
+            !is_writable($isWritable)
+        ){
             $msg = sprintf(
-                'File: %s is not writable.',
-                $this->options->getFilename()
+                '%s %s, is not writable',
+                $isDir ? 'Directory' : 'File',
+                $isWritable
             );
 
-            throw new Exception\FileIsNotWritableException($msg);
+            $exception = $isDir ? 'Exception\DirectoryIsNotWritableException' : 'Exception\FileIsNotWritableException';
+
+            throw new $exception($msg);
         }
 
         if(
@@ -52,5 +75,7 @@ class ContainerFileWriter implements ContainerFileWriterInterface
 
             throw new Exception\FileAlreadyExistsException($msg);
         }
+
+        $this->canWrite = true;
     }
 }

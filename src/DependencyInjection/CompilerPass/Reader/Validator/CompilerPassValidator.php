@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Reader\Validator;
 
+use LDL\DependencyInjection\CompilerPass\LDLAbstractCompilerPass;
 use LDL\FS\Type\AbstractFileType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -80,10 +81,11 @@ class CompilerPassValidator
          */
         $passInstance = new $class();
 
-        if(!($passInstance instanceof CompilerPassInterface)){
+        if(!($passInstance instanceof LDLAbstractCompilerPass)){
             $msg = sprintf(
-                'Compiler pass does not implement the correct compiler pass interface (%s), at file: %s',
-                CompilerPassInterface::class,
+                'Your compiler pass must extends to %s, read the docs at %s, at file: %s',
+                LDLAbstractCompilerPass::class,
+                'https://github.com/pthreat/ldl-container-builder',
                 $file->getRealPath()
             );
             throw new Exception\ImplementsException($msg);

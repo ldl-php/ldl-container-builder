@@ -75,7 +75,7 @@ class Builder implements BuilderInterface
      */
     public function build(): ContainerBuilder
     {
-        $this->serviceFileWriter->write('');
+        $this->serviceFileWriter->test();
 
         $serviceFiles = $this->serviceFileFinder->find();
 
