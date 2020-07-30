@@ -7,6 +7,7 @@ namespace LDL\DependencyInjection\CompilerPass\Finder;
 use LDL\FS\Finder\Adapter\LocalFileFinder;
 use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
 use LDL\FS\Type\Types\Generic\GenericFileType;
+use Symfony\Component\String\UnicodeString;
 
 class CompilerPassFinder implements CompilerPassFinderInterface
 {
@@ -38,8 +39,13 @@ class CompilerPassFinder implements CompilerPassFinderInterface
                 unset($files[$key]);
             }
 
-            if(in_array($file->getPath(), $this->options->getExcludedDirectories(), true)){
-                unset($files[$key]);
+            foreach($this->options->getExcludedDirectories() as $directory){
+                $path = new UnicodeString($file->getPath());
+                $dir = new UnicodeString($directory);
+
+                if(true === $path->startsWith($dir)){
+                    unset($files[$key]);
+                }
             }
         }
 

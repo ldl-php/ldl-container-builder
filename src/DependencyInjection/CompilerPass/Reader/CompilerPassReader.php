@@ -51,11 +51,11 @@ class CompilerPassReader implements CompilerPassReaderInterface
                 }
             }
 
-            if($pass instanceof LDLCompilerPassInterface) {
-                $container->addCompilerPass($pass, $pass->getType(), $pass->getPriority());
-            }else{
-                $container->addCompilerPass($pass);
-            }
+            /**
+             * All compilerPasses must extend to LDLAbstractCompilerPass,
+             * so getType() and getPriority() they will always be defined
+             */
+            $container->addCompilerPass($pass, $pass->getType(), $pass->getPriority());
 
         } catch(\Exception $e){
 

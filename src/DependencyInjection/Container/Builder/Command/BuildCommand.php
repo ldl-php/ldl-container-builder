@@ -69,6 +69,12 @@ class BuildCommand extends SymfonyCommand
                 implode(',', $finderDefaults->getDirectories())
             )
             ->addOption(
+                'excluded-directories',
+                'e',
+                InputOption::VALUE_OPTIONAL,
+                'Comma separated list of excluded directories to scan'
+            )
+            ->addOption(
                 'scan-files',
                 'l',
                 InputOption::VALUE_OPTIONAL,
@@ -120,6 +126,7 @@ class BuildCommand extends SymfonyCommand
     {
         $start = hrtime(true);
         $findFirst = $input->getOption('find-first');
+        $excludedDirectories = $input->getOption('excluded-directories');
 
         try{
             $dumpOptions = $input->getOption('dump-options');
@@ -134,6 +141,7 @@ class BuildCommand extends SymfonyCommand
 
             $finderOptions = ServiceFileFinderOptions::fromArray([
                 'directories' => explode(',', $input->getOption('scan-directories')),
+                'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : [],
                 'files' => explode(',', $input->getOption('scan-files')),
                 'findFirst' => null !== $findFirst ? explode(',', $findFirst) : []
             ]);
@@ -144,7 +152,8 @@ class BuildCommand extends SymfonyCommand
 
             $compilerPassFinderOptions = CompilerPassFinderOptions::fromArray([
                 'pattern' => $input->getOption('cpass-pattern'),
-                'directories' => explode(',', $input->getOption('scan-directories'))
+                'directories' => explode(',', $input->getOption('scan-directories')),
+                'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : []
             ]);
 
             $compilerPassReaderOptions = CompilerPassReaderOptions::fromArray([
