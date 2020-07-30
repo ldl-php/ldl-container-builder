@@ -36,7 +36,7 @@ class CompilerPassValidator
         }
 
         preg_match(
-            '/class.*implements.*CompilerPassInterface.*/i',
+            '/class.*/',
             file_get_contents($file->getRealPath()),
             $classesInFile
         );
@@ -75,13 +75,13 @@ class CompilerPassValidator
             require_once $file->getRealPath();
         }
 
-        var_dump($class);
-        /**
-         * @var CompilerPassInterface $passInstance
-         */
-        $passInstance = new $class();
+        $rc = new \ReflectionClass($class);
 
-        if(!($passInstance instanceof LDLAbstractCompilerPass)){
+        if($rc->isAbstract()){
+            return null;
+        }
+
+        if(false === $rc->isSubclassOf(LDLAbstractCompilerPass::class)){
             $msg = sprintf(
                 'Your compiler pass must extends to %s, read the docs at %s, at file: %s',
                 LDLAbstractCompilerPass::class,
@@ -91,6 +91,6 @@ class CompilerPassValidator
             throw new Exception\ImplementsException($msg);
         }
 
-        return $passInstance;
+        return new $class();
     }
 }

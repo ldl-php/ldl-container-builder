@@ -7,6 +7,7 @@ namespace LDL\DependencyInjection\Service\Finder;
 use LDL\FS\Finder\Adapter\LocalFileFinder;
 use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
 use LDL\FS\Type\Types\Generic\GenericFileType;
+use Symfony\Component\String\UnicodeString;
 
 class ServiceFileFinder implements ServiceFileFinderInterface
 {
@@ -47,9 +48,13 @@ class ServiceFileFinder implements ServiceFileFinderInterface
                 continue;
             }
 
-            if(in_array($file->getRealPath(), $this->options->getExcludedFiles(), true)){
-                unset($files[$key]);
-                continue;
+            foreach($this->options->getExcludedDirectories() as $directory){
+                $path = new UnicodeString($file->getPath());
+                $dir = new UnicodeString($directory);
+
+                if(true === $path->startsWith($dir)){
+                    unset($files[$key]);
+                }
             }
 
             $return->append($file);
