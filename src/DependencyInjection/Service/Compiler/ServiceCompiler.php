@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace LDL\DependencyInjection\Container\Compiler;
+namespace LDL\DependencyInjection\Service\Compiler;
 
-use LDL\DependencyInjection\Container\Compiler\Options\ServiceCompilerOptions;
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
 use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
 use LDL\FS\Type\AbstractFileType;
@@ -17,7 +16,7 @@ use Symfony\Component\DependencyInjection\Dumper\YamlDumper;
 class ServiceCompiler implements ServiceCompilerInterface
 {
     /**
-     * @var ServiceCompilerOptions
+     * @var Options\ServiceCompilerOptions
      */
     private $options;
 
@@ -83,5 +82,13 @@ class ServiceCompiler implements ServiceCompilerInterface
         }
 
         return $dumper->dump($this->options->getDumpOptions());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions(): Options\ServiceCompilerOptions
+    {
+        return $this->options;
     }
 }

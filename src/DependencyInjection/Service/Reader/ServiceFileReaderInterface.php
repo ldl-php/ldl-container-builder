@@ -15,4 +15,9 @@ interface ServiceFileReaderInterface
      * @return mixed
      */
     public function read(ContainerBuilder $container, AbstractFileType $file) : void;
+
+    /**
+     * @return Options\ServiceReaderOptions
+     */
+    public function getOptions() : Options\ServiceReaderOptions;
 }

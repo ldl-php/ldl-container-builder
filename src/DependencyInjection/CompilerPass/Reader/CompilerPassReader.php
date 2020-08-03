@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Reader;
 
-use LDL\DependencyInjection\CompilerPass\LDLCompilerPassInterface;
 use LDL\DependencyInjection\CompilerPass\Reader\Validator\CompilerPassValidator;
 use LDL\FS\Type\AbstractFileType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -65,6 +64,13 @@ class CompilerPassReader implements CompilerPassReaderInterface
 
             throw new Exception\ValidatorException($e->getMessage());
         }
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions(): Options\CompilerPassReaderOptions
+    {
+        return $this->options;
     }
 }

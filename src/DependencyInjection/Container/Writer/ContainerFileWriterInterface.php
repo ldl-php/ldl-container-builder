@@ -18,4 +18,9 @@ interface ContainerFileWriterInterface
      * @throws Exception\DirectoryIsNotWritableException
      */
     public function test(): void;
+
+    /**
+     * @return Options\ContainerWriterOptions
+     */
+    public function getOptions(): Options\ContainerWriterOptions;
 }

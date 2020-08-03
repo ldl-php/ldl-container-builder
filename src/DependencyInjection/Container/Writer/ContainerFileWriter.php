@@ -78,4 +78,12 @@ class ContainerFileWriter implements ContainerFileWriterInterface
 
         $this->canWrite = true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions(): Options\ContainerWriterOptions
+    {
+        return clone($this->options);
+    }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LDL\DependencyInjection\Container\Compiler;
+namespace LDL\DependencyInjection\Service\Compiler;
 
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
 use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
@@ -27,4 +27,9 @@ interface ServiceCompilerInterface
         GenericFileCollection $compilerPassFiles,
         CompilerPassReaderInterface $compilerPassReader
     ) : string;
+
+    /**
+     * @return Options\ServiceCompilerOptions
+     */
+    public function getOptions(): Options\ServiceCompilerOptions;
 }
