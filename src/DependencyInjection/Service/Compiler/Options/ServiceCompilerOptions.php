@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LDL\DependencyInjection\Container\Compiler\Options;
+namespace LDL\DependencyInjection\Service\Compiler\Options;
 
 class ServiceCompilerOptions
 {

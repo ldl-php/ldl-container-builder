@@ -15,4 +15,9 @@ interface CompilerPassReaderInterface
      * @return mixed
      */
     public function read(ContainerBuilder $container, AbstractFileType $file) : void;
+
+    /**
+     * @return Options\CompilerPassReaderOptions
+     */
+    public function getOptions(): Options\CompilerPassReaderOptions;
 }

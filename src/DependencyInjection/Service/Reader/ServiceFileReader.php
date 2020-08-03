@@ -88,7 +88,14 @@ class ServiceFileReader implements ServiceFileReaderInterface
 
             throw new Exception\ParserNotFoundException($msg);
         }
+    }
 
+    /**
+     * @return Options\ServiceReaderOptions
+     */
+    public function getOptions() : Options\ServiceReaderOptions
+    {
+        return $this->options;
     }
 
 }

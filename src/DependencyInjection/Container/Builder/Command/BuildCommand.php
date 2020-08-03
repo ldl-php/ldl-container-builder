@@ -8,8 +8,8 @@ use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
 use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFinderOptions;
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReader;
 use LDL\DependencyInjection\CompilerPass\Reader\Options\CompilerPassReaderOptions;
-use LDL\DependencyInjection\Container\Compiler\ServiceCompiler;
-use LDL\DependencyInjection\Container\Compiler\Options\ServiceCompilerOptions;
+use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
+use LDL\DependencyInjection\Service\Compiler\Options\ServiceCompilerOptions;
 
 use LDL\DependencyInjection\Service\Finder\ServiceFileFinder;
 use LDL\DependencyInjection\Service\Finder\Options\ServiceFileFinderOptions;

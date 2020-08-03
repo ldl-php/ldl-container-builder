@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LDL\DependencyInjection\Container\Compiler\Exception;
+namespace LDL\DependencyInjection\Service\Compiler\Exception;
 
 class CompileErrorException extends ServiceCompilerException
 {

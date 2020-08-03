@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LDL\DependencyInjection\Container\Builder;
 
 use LDL\DependencyInjection\CompilerPass\Finder\Exception\NoFilesFoundException as NoCompilerPassFound;
-use LDL\DependencyInjection\Container\Compiler\ServiceCompiler;
-use LDL\DependencyInjection\Container\Compiler\ServiceCompilerInterface;
+use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
+use LDL\DependencyInjection\Service\Compiler\ServiceCompilerInterface;
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinderInterface;
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReader;
@@ -40,7 +40,7 @@ class Builder implements BuilderInterface
     /**
      * @var ContainerFileWriterInterface
      */
-    private $serviceFileWriter;
+    private $containerFileWriter;
 
     /**
      * @var CompilerPassFinderInterface
@@ -64,7 +64,7 @@ class Builder implements BuilderInterface
         $this->serviceFileFinder      = $finder   ?? new ServiceFileFinder();
         $this->serviceCompiler        = $compiler ?? new ServiceCompiler();
         $this->serviceFileReader      = $reader   ?? new ServiceFileReader();
-        $this->serviceFileWriter      = $writer   ?? new ContainerFileWriter();
+        $this->containerFileWriter      = $writer   ?? new ContainerFileWriter();
 
         $this->compilerPassFileFinder = $compilerPassFinder ?? new CompilerPassFinder();
         $this->compilerPassFileReader = $compilerPassReader ?? new CompilerPassReader();
@@ -75,7 +75,7 @@ class Builder implements BuilderInterface
      */
     public function build(): ContainerBuilder
     {
-        $this->serviceFileWriter->test();
+        $this->containerFileWriter->test();
 
         $serviceFiles = $this->serviceFileFinder->find();
 
@@ -95,24 +95,56 @@ class Builder implements BuilderInterface
             $this->compilerPassFileReader
         );
 
-        $this->serviceFileWriter->write($compiled);
+        $this->containerFileWriter->write($compiled);
 
         return $builder;
     }
 
     /**
-     * {@inheritdoc}
+     * @return ServiceFileFinderInterface
      */
-    public function getFinder() : ServiceFileFinderInterface
+    public function getServiceFinder() : ServiceFileFinderInterface
     {
         return $this->serviceFileFinder;
     }
 
     /**
-     * {@inheritdoc}
+     * @return ServiceFileReaderInterface
      */
-    public function getCompiler() : CompilerPassFinderInterface
+    public function getServiceReader(): ServiceFileReaderInterface
+    {
+        return $this->serviceFileReader;
+    }
+
+    /**
+     * @return ServiceCompilerInterface
+     */
+    public function getServiceCompiler(): ServiceCompilerInterface
+    {
+        return $this->serviceCompiler;
+    }
+
+    /**
+     * @return CompilerPassFinderInterface
+     */
+    public function getCompilerPassFinder() : CompilerPassFinderInterface
     {
         return $this->compilerPassFileFinder;
+    }
+
+    /**
+     * @return CompilerPassReaderInterface
+     */
+    public function getCompilerPassReader() : CompilerPassReaderInterface
+    {
+        return $this->compilerPassFileReader;
+    }
+
+    /**
+     * @return ContainerFileWriterInterface
+     */
+    public function getContainerWriter(): ContainerFileWriterInterface
+    {
+        return $this->containerFileWriter;
     }
 }
