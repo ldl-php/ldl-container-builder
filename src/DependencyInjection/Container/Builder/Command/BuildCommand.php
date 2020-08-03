@@ -18,7 +18,7 @@ use LDL\DependencyInjection\Service\Reader\ServiceFileReader;
 use LDL\DependencyInjection\Service\Reader\Options\ServiceReaderOptions;
 use LDL\DependencyInjection\Container\Writer\ContainerFileWriter;
 
-use LDL\DependencyInjection\Container\Builder\Builder;
+use LDL\DependencyInjection\Container\Builder\LDLContainerBuilder;
 
 use LDL\DependencyInjection\Container\Writer\Options\ContainerWriterOptions;
 
@@ -186,7 +186,7 @@ class BuildCommand extends SymfonyCommand
 
             $output->writeln("\n<info>$title</info>\n");
 
-            $builder = new Builder(
+            $builder = new LDLContainerBuilder(
                 new ServiceFileFinder($finderOptions),
                 new ServiceCompiler($compilerOptions),
                 new ContainerFileWriter($writerOptions),

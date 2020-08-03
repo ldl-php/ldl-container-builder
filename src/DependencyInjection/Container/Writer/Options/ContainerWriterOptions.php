@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Container\Writer\Options;
 
-class ContainerWriterOptions
+use LDL\DependencyInjection\Interfaces\OptionsInterface;
+
+class ContainerWriterOptions implements OptionsInterface
 {
     /**
      * @var string
@@ -47,6 +49,22 @@ class ContainerWriterOptions
 
         return $instance->setFilename($merge['filename'])
             ->setForce($merge['force']);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
     }
 
     /**

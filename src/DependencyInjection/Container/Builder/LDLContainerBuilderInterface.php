@@ -15,7 +15,7 @@ use LDL\DependencyInjection\Service\Finder\ServiceFileFinderInterface;
 use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-interface BuilderInterface
+interface LDLContainerBuilderInterface
 {
     /**
      * @throws CompileErrorException
@@ -35,6 +35,11 @@ interface BuilderInterface
     public function getServiceReader(): ServiceFileReaderInterface;
 
     /**
+     * @return ServiceCompilerInterface
+     */
+    public function getServiceCompiler(): ServiceCompilerInterface;
+
+    /**
      * @return CompilerPassFinderInterface
      */
     public function getCompilerPassFinder() : CompilerPassFinderInterface;
@@ -43,11 +48,6 @@ interface BuilderInterface
      * @return CompilerPassReaderInterface
      */
     public function getCompilerPassReader() : CompilerPassReaderInterface;
-
-    /**
-     * @return ServiceCompilerInterface
-     */
-    public function getContainerCompiler(): ServiceCompilerInterface;
 
     /**
      * @return ContainerFileWriterInterface

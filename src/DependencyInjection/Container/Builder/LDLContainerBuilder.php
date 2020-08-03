@@ -20,7 +20,7 @@ use LDL\DependencyInjection\Container\Writer\ContainerFileWriterInterface;
 use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class Builder implements BuilderInterface
+class LDLContainerBuilder implements LDLContainerBuilderInterface
 {
     /**
      * @var ServiceFileFinderInterface

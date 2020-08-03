@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\Reader\Options;
 
-class ServiceReaderOptions
+use LDL\DependencyInjection\Interfaces\OptionsInterface;
+
+class ServiceReaderOptions implements OptionsInterface
 {
     /**
      * @var bool
@@ -21,6 +23,22 @@ class ServiceReaderOptions
         $merge = array_merge(get_object_vars($obj), $options);
 
         return $obj->setIgnoreErrors($merge['ignoreErrors']);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
     }
 
     private function setIgnoreErrors(bool $value) : ServiceReaderOptions
