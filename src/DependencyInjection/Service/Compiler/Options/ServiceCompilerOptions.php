@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\Compiler\Options;
 
-class ServiceCompilerOptions
+use LDL\DependencyInjection\Interfaces\OptionsInterface;
+
+class ServiceCompilerOptions implements OptionsInterface
 {
 
     /**
@@ -47,6 +49,22 @@ class ServiceCompilerOptions
             ->setOnCompile($merge['onCompile'])
             ->setOnAfterCompile($merge['onAfterCompile'])
             ->setDumpOptions($merge['dumpOptions']);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
     }
 
     /**
