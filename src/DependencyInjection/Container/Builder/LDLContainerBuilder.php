@@ -15,8 +15,6 @@ use LDL\DependencyInjection\Service\Finder\ServiceFileFinder;
 use LDL\DependencyInjection\Service\Finder\ServiceFileFinderInterface;
 use LDL\DependencyInjection\Service\Reader\ServiceFileReader;
 use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
-use LDL\DependencyInjection\Container\Writer\ContainerFileWriter;
-use LDL\DependencyInjection\Container\Writer\ContainerFileWriterInterface;
 use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -38,11 +36,6 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     private $serviceCompiler;
 
     /**
-     * @var ContainerFileWriterInterface
-     */
-    private $containerFileWriter;
-
-    /**
      * @var CompilerPassFinderInterface
      */
     private $compilerPassFileFinder;
@@ -55,7 +48,6 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     public function __construct(
         ServiceFileFinderInterface $finder = null,
         ServiceCompilerInterface $compiler = null,
-        ContainerFileWriterInterface $writer = null,
         ServiceFileReaderInterface $reader = null,
         CompilerPassFinderInterface $compilerPassFinder = null,
         CompilerPassReaderInterface $compilerPassReader = null
@@ -64,7 +56,6 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
         $this->serviceFileFinder      = $finder   ?? new ServiceFileFinder();
         $this->serviceCompiler        = $compiler ?? new ServiceCompiler();
         $this->serviceFileReader      = $reader   ?? new ServiceFileReader();
-        $this->containerFileWriter      = $writer   ?? new ContainerFileWriter();
 
         $this->compilerPassFileFinder = $compilerPassFinder ?? new CompilerPassFinder();
         $this->compilerPassFileReader = $compilerPassReader ?? new CompilerPassReader();
@@ -75,8 +66,6 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
      */
     public function build(): ContainerBuilder
     {
-        $this->containerFileWriter->test();
-
         $serviceFiles = $this->serviceFileFinder->find();
 
         try{
@@ -87,15 +76,13 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
 
         $builder = new ContainerBuilder();
 
-        $compiled = $this->serviceCompiler->compile(
+        $this->serviceCompiler->compile(
             $builder,
             $serviceFiles,
             $this->serviceFileReader,
             $compilerPassFiles,
             $this->compilerPassFileReader
         );
-
-        $this->containerFileWriter->write($compiled);
 
         return $builder;
     }
@@ -138,13 +125,5 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     public function getCompilerPassReader() : CompilerPassReaderInterface
     {
         return $this->compilerPassFileReader;
-    }
-
-    /**
-     * @return ContainerFileWriterInterface
-     */
-    public function getContainerWriter(): ContainerFileWriterInterface
-    {
-        return $this->containerFileWriter;
     }
 }

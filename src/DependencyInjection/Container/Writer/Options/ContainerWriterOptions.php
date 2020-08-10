@@ -23,10 +23,6 @@ class ContainerWriterOptions implements OptionsInterface
      */
     private $force = false;
 
-    public function __construct()
-    {
-    }
-
     public static function fromArray(array $options) : self
     {
         $instance = new static();
@@ -48,7 +44,8 @@ class ContainerWriterOptions implements OptionsInterface
         $merge = array_merge($defaults, $options);
 
         return $instance->setFilename($merge['filename'])
-            ->setForce($merge['force']);
+            ->setForce($merge['force'])
+            ->setMockWrite($merge['mockWrite']);
     }
 
     /**

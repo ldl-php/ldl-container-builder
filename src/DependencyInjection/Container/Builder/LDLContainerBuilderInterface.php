@@ -8,7 +8,6 @@ use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinderInterface;
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
 use LDL\DependencyInjection\Service\Compiler\Exception\CompileErrorException;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompilerInterface;
-use LDL\DependencyInjection\Container\Writer\ContainerFileWriterInterface;
 use LDL\DependencyInjection\Service\Finder\Exception\NoFilesFoundException as NoServicesFoundException;
 use LDL\DependencyInjection\Container\Writer\Exception\FileAlreadyExistsException;
 use LDL\DependencyInjection\Service\Finder\ServiceFileFinderInterface;
@@ -48,9 +47,4 @@ interface LDLContainerBuilderInterface
      * @return CompilerPassReaderInterface
      */
     public function getCompilerPassReader() : CompilerPassReaderInterface;
-
-    /**
-     * @return ContainerFileWriterInterface
-     */
-    public function getContainerWriter(): ContainerFileWriterInterface;
 }

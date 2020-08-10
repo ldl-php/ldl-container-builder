@@ -189,13 +189,14 @@ class BuildCommand extends SymfonyCommand
             $builder = new LDLContainerBuilder(
                 new ServiceFileFinder($finderOptions),
                 new ServiceCompiler($compilerOptions),
-                new ContainerFileWriter($writerOptions),
                 new ServiceFileReader($readerOptions),
                 new CompilerPassFinder($compilerPassFinderOptions),
                 new CompilerPassReader($compilerPassReaderOptions)
             );
 
-            $builder->build();
+            $writer = new ContainerFileWriter($writerOptions);
+
+            $writer->write($builder->build());
 
             $output->writeln("");
 

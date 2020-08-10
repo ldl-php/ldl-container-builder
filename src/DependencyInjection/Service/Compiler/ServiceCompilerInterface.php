@@ -26,7 +26,7 @@ interface ServiceCompilerInterface
         ServiceFileReaderInterface $reader,
         GenericFileCollection $compilerPassFiles,
         CompilerPassReaderInterface $compilerPassReader
-    ) : string;
+    ) : void;
 
     /**
      * @return Options\ServiceCompilerOptions

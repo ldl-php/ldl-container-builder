@@ -31,7 +31,7 @@ class ServiceCompiler implements ServiceCompilerInterface
         ServiceFileReaderInterface $reader,
         GenericFileCollection $compilerPassFiles,
         CompilerPassReaderInterface $compilerPassReader
-    ) : string
+    ) : void
     {
 
         if($this->options->getOnBeforeCompile()){
@@ -66,22 +66,6 @@ class ServiceCompiler implements ServiceCompilerInterface
             throw new Exception\CompileErrorException($e->getMessage());
         }
 
-        switch(strtolower($this->options->getDumpFormat())){
-            case 'xml':
-                $dumper = new XmlDumper($container);
-                break;
-
-            case 'yml':
-                $dumper = new YamlDumper($container);
-                break;
-
-            case 'php':
-            default:
-                $dumper = new PhpDumper($container);
-                break;
-        }
-
-        return $dumper->dump($this->options->getDumpOptions());
     }
 
     /**

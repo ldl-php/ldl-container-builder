@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Container\Writer;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
 interface ContainerFileWriterInterface
 {
     /**
-     * @param string $content
+     * @param ContainerBuilder $container
      * @throws Exception\FileAlreadyExistsException
      */
-    public function write(string $content): void;
+    public function write(ContainerBuilder $container): void;
 
     /**
      * @throws Exception\FileAlreadyExistsException
