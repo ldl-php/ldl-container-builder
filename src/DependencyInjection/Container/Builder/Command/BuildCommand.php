@@ -8,6 +8,8 @@ use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
 use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFinderOptions;
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReader;
 use LDL\DependencyInjection\CompilerPass\Reader\Options\CompilerPassReaderOptions;
+use LDL\DependencyInjection\Container\Config\ContainerConfig;
+use LDL\DependencyInjection\Container\Config\ContainerConfigFactory;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
 use LDL\DependencyInjection\Service\Compiler\Options\ServiceCompilerOptions;
 
@@ -134,30 +136,11 @@ class BuildCommand extends SymfonyCommand
             $compilerProgress = new ProgressBar($output);
             $compilerProgress->setOverwrite(true);
 
-            $writerOptions = ContainerWriterOptions::fromArray([
-                'filename' => $input->getArgument('output-file'),
-                'force' => (bool) $input->getOption('force-overwrite')
-            ]);
-
-            $finderOptions = ServiceFileFinderOptions::fromArray([
+            $serviceFinderOptions = ServiceFileFinderOptions::fromArray([
                 'directories' => explode(',', $input->getOption('scan-directories')),
                 'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : [],
                 'files' => explode(',', $input->getOption('scan-files')),
                 'findFirst' => null !== $findFirst ? explode(',', $findFirst) : []
-            ]);
-
-            $readerOptions = ServiceReaderOptions::fromArray([
-                'ignoreErrors' => (bool)$input->getOption('ignore-read-errors')
-            ]);
-
-            $compilerPassFinderOptions = CompilerPassFinderOptions::fromArray([
-                'pattern' => $input->getOption('cpass-pattern'),
-                'directories' => explode(',', $input->getOption('scan-directories')),
-                'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : []
-            ]);
-
-            $compilerPassReaderOptions = CompilerPassReaderOptions::fromArray([
-                'ignoreErrors' => (bool)$input->getOption('ignore-read-errors')
             ]);
 
             if(null !== $dumpOptions){
@@ -168,7 +151,7 @@ class BuildCommand extends SymfonyCommand
                 }
             }
 
-            $compilerOptions = ServiceCompilerOptions::fromArray([
+            $serviceCompilerOptions = ServiceCompilerOptions::fromArray([
                 'dumpFormat' => $input->getArgument('dump-format'),
                 'dumpOptions' => $dumpOptions ?? [],
                 'onBeforeCompile' => function($container, $files) use ($compilerProgress){
@@ -182,21 +165,50 @@ class BuildCommand extends SymfonyCommand
                 }
             ]);
 
+            $serviceReaderOptions = ServiceReaderOptions::fromArray([
+                'ignoreErrors' => (bool)$input->getOption('ignore-read-errors')
+            ]);
+
+            $compilerPassFinderOptions = CompilerPassFinderOptions::fromArray([
+                'pattern' => $input->getOption('cpass-pattern'),
+                'directories' => explode(',', $input->getOption('scan-directories')),
+                'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : []
+            ]);
+
+            $compilerPassReaderOptions = CompilerPassReaderOptions::fromArray([
+                'ignoreErrors' => (bool)$input->getOption('ignore-read-errors')
+            ]);
+
             $title = '[ Building compiled services file ]';
 
             $output->writeln("\n<info>$title</info>\n");
 
             $builder = new LDLContainerBuilder(
-                new ServiceFileFinder($finderOptions),
-                new ServiceCompiler($compilerOptions),
-                new ServiceFileReader($readerOptions),
+                new ServiceFileFinder($serviceFinderOptions),
+                new ServiceCompiler($serviceCompilerOptions),
+                new ServiceFileReader($serviceReaderOptions),
                 new CompilerPassFinder($compilerPassFinderOptions),
                 new CompilerPassReader($compilerPassReaderOptions)
             );
 
-            $writer = new ContainerFileWriter($writerOptions);
+            $container = $builder->build();
 
-            $writer->write($builder->build());
+            $containerWriterOptions = ContainerWriterOptions::fromArray([
+                'filename' => $input->getArgument('output-file'),
+                'force' => (bool) $input->getOption('force-overwrite'),
+            ]);
+
+            $writer = new ContainerFileWriter($containerWriterOptions);
+
+            $writer->write(ContainerConfigFactory::factory(
+                $builder->getServiceFinder(),
+                $builder->getServiceCompiler(),
+                $builder->getServiceReader(),
+                $builder->getCompilerPassFinder(),
+                $builder->getCompilerPassReader(),
+                $writer,
+                $dumpOptions
+            ), $container);
 
             $output->writeln("");
 

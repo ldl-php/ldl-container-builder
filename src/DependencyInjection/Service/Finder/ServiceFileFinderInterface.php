@@ -9,11 +9,11 @@ use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
 interface ServiceFileFinderInterface
 {
     /**
-     * @param Options\ServiceFileFinderOptions $options
+     * @param bool $cache
      * @return GenericFileCollection
      * @throws Exception\NoFilesFoundException
      */
-    public function find() : GenericFileCollection;
+    public function find(bool $cache = false) : GenericFileCollection;
 
     /**
      * @return Options\ServiceFileFinderOptions

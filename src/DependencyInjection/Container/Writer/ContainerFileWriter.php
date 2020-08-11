@@ -1,9 +1,8 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Container\Writer;
 
+use LDL\DependencyInjection\Container\Config\ContainerConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Dumper\XmlDumper;
@@ -29,28 +28,15 @@ class ContainerFileWriter implements ContainerFileWriterInterface
     /**
      * {@inheritdoc}
      */
-    public function write(
-        ContainerBuilder $container,
-        array $options = []
-    ): void
+    public function write(ContainerConfig $config, ContainerBuilder $container): void
     {
+        $options = $config->getDumpOptions();
+
         if($this->options->isMockWrite()){
             return;
         }
 
         $this->test();
-
-        if(!array_key_exists('namespace', $options)){
-            $options['namespace'] = 'LDL\\DependencyInjection';
-        }
-
-        if(!array_key_exists('class', $options)){
-            $options['class'] = 'LDLContainer';
-        }
-
-        if(!array_key_exists('format', $options)){
-            $options['format'] = 'php';
-        }
 
         switch(strtolower($options['format'])){
             case 'xml':
@@ -67,9 +53,12 @@ class ContainerFileWriter implements ContainerFileWriterInterface
                 break;
         }
 
-        unset($options['format']);
-
         $content = $dumper->dump($options);
+
+        file_put_contents(
+            $config->getGeneratedAs(),
+            json_encode($config->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES)
+        );
 
         file_put_contents($this->options->getFilename(), $content);
     }

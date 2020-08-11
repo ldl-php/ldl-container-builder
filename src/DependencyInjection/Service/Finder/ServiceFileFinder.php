@@ -16,16 +16,26 @@ class ServiceFileFinder implements ServiceFileFinderInterface
      */
     private $options;
 
+    /**
+     * @var GenericFileCollection
+     */
+    private $files;
+
     public function __construct(Options\ServiceFileFinderOptions $options=null)
     {
         $this->options = $options ??  Options\ServiceFileFinderOptions::fromArray([]);
+        $this->files = new GenericFileCollection();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function find() : GenericFileCollection
+    public function find(bool $cache = false) : GenericFileCollection
     {
+        if(true === $cache){
+            return $this->files;
+        }
+
         $return = new GenericFileCollection();
 
         $options =  $this->options;
@@ -43,9 +53,10 @@ class ServiceFileFinder implements ServiceFileFinderInterface
          * @var GenericFileType $file
          */
         foreach($files as $key=>$file){
-            if(in_array($file->getPath(), $this->options->getExcludedDirectories(), true)){
-                unset($files[$key]);
-                continue;
+            $skip = false;
+
+            if(in_array($file->getPath(), $this->options->getExcludedFiles(), true)){
+                $skip = true;
             }
 
             foreach($this->options->getExcludedDirectories() as $directory){
@@ -53,8 +64,13 @@ class ServiceFileFinder implements ServiceFileFinderInterface
                 $dir = new UnicodeString($directory);
 
                 if(true === $path->startsWith($dir)){
-                    unset($files[$key]);
+                    $skip = true;
+                    break;
                 }
+            }
+
+            if(true === $skip){
+                continue;
             }
 
             $return->append($file);
@@ -70,6 +86,7 @@ class ServiceFileFinder implements ServiceFileFinderInterface
             throw new Exception\NoFilesFoundException($msg);
         }
 
+        $this->files = $return;
         return $return;
     }
 

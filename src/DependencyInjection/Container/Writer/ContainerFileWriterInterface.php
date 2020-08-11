@@ -1,18 +1,18 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Container\Writer;
 
+use LDL\DependencyInjection\Container\Config\ContainerConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface ContainerFileWriterInterface
 {
     /**
+     * @param ContainerConfig $config
      * @param ContainerBuilder $container
      * @throws Exception\FileAlreadyExistsException
      */
-    public function write(ContainerBuilder $container): void;
+    public function write(ContainerConfig $config, ContainerBuilder $container): void;
 
     /**
      * @throws Exception\FileAlreadyExistsException
