@@ -88,7 +88,7 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     }
 
     /**
-     * @return ServiceFileFinderInterface
+     * {@inheritdoc}
      */
     public function getServiceFinder() : ServiceFileFinderInterface
     {
@@ -96,7 +96,7 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     }
 
     /**
-     * @return ServiceFileReaderInterface
+     * {@inheritdoc}
      */
     public function getServiceReader(): ServiceFileReaderInterface
     {
@@ -104,7 +104,7 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     }
 
     /**
-     * @return ServiceCompilerInterface
+     * {@inheritdoc}
      */
     public function getServiceCompiler(): ServiceCompilerInterface
     {
@@ -112,7 +112,7 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     }
 
     /**
-     * @return CompilerPassFinderInterface
+     * {@inheritdoc}
      */
     public function getCompilerPassFinder() : CompilerPassFinderInterface
     {
@@ -120,7 +120,7 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
     }
 
     /**
-     * @return CompilerPassReaderInterface
+     * {@inheritdoc}
      */
     public function getCompilerPassReader() : CompilerPassReaderInterface
     {

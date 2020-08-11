@@ -16,16 +16,28 @@ class CompilerPassFinder implements CompilerPassFinderInterface
      */
     private $options;
 
+    /**
+     * @var GenericFileCollection
+     */
+    private $files;
+
     public function __construct(Options\CompilerPassFinderOptions $options = null)
     {
         $this->options = $options ?? Options\CompilerPassFinderOptions::fromArray([]);
+        $this->files = new GenericFileCollection();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function find(): GenericFileCollection
+    public function find(bool $cache = false): GenericFileCollection
     {
+        if(true === $cache){
+            return $this->files;
+        }
+
+        $return = new GenericFileCollection();
+
         $files = LocalFileFinder::findRegex(
             $this->options->getPattern(),
             $this->options->getDirectories()
@@ -35,8 +47,10 @@ class CompilerPassFinder implements CompilerPassFinderInterface
          * @var GenericFileType $file
          */
         foreach($files as $key => $file){
+            $skip = false;
+
             if(in_array($file->getRealPath(), $this->options->getExcludedFiles(), true)){
-                unset($files[$key]);
+                $skip = true;
             }
 
             foreach($this->options->getExcludedDirectories() as $directory){
@@ -44,12 +58,19 @@ class CompilerPassFinder implements CompilerPassFinderInterface
                 $dir = new UnicodeString($directory);
 
                 if(true === $path->startsWith($dir)){
-                    unset($files[$key]);
+                    $skip = true;
+                    break;
                 }
             }
+
+            if(true === $skip){
+                continue;
+            }
+
+            $return->append($file);
         }
 
-        if(!count($files)){
+        if(!count($return)){
             $msg = sprintf(
                 'No files were found matching: "%s" in directories: "%s"',
                 $this->options->getPattern(),
@@ -59,7 +80,8 @@ class CompilerPassFinder implements CompilerPassFinderInterface
             throw new Exception\NoFilesFoundException($msg);
         }
 
-        return $files;
+        $this->files = $return;
+        return $return;
     }
 
     /**
