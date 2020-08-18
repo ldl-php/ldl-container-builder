@@ -8,7 +8,6 @@ use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
 use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFinderOptions;
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReader;
 use LDL\DependencyInjection\CompilerPass\Reader\Options\CompilerPassReaderOptions;
-use LDL\DependencyInjection\Container\Config\ContainerConfig;
 use LDL\DependencyInjection\Container\Config\ContainerConfigFactory;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
 use LDL\DependencyInjection\Service\Compiler\Options\ServiceCompilerOptions;
@@ -105,8 +104,8 @@ class BuildCommand extends SymfonyCommand
                 'cpass-pattern',
                 'p',
                 InputOption::VALUE_OPTIONAL,
-                'Find files matching a regex pattern to find compiler pass files',
-                $cpassDefaults->getPattern()
+                'Comma separated regex pattern to find compiler pass files',
+                implode(', ', $cpassDefaults->getPatterns())
             );
     }
 
@@ -129,6 +128,7 @@ class BuildCommand extends SymfonyCommand
         $start = hrtime(true);
         $findFirst = $input->getOption('find-first');
         $excludedDirectories = $input->getOption('excluded-directories');
+        $cpassPattern = $input->getOption('cpass-pattern');
 
         try{
             $dumpOptions = $input->getOption('dump-options');
@@ -170,7 +170,7 @@ class BuildCommand extends SymfonyCommand
             ]);
 
             $compilerPassFinderOptions = CompilerPassFinderOptions::fromArray([
-                'pattern' => $input->getOption('cpass-pattern'),
+                'patterns' => null !== $cpassPattern ? explode(',', $cpassPattern) : CompilerPassFinderOptions::DEFAULT_CPASS_PATTERNS,
                 'directories' => explode(',', $input->getOption('scan-directories')),
                 'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : []
             ]);

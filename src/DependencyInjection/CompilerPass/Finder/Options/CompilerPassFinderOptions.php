@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Finder\Options;
 
@@ -8,6 +6,10 @@ use LDL\DependencyInjection\Interfaces\OptionsInterface;
 
 class CompilerPassFinderOptions implements OptionsInterface
 {
+    public const DEFAULT_CPASS_PATTERNS = [
+        '^.*CompilerPass.php$'
+    ];
+
     /**
      * @var array
      */
@@ -24,9 +26,9 @@ class CompilerPassFinderOptions implements OptionsInterface
     private $excludedFiles = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $pattern = '^.*CompilerPass.php$';
+    private $patterns = self::DEFAULT_CPASS_PATTERNS;
 
     public static function fromArray(array $options) : self
     {
@@ -37,7 +39,7 @@ class CompilerPassFinderOptions implements OptionsInterface
         return $instance->setDirectories($merge['directories'])
             ->setExcludedDirectories($merge['excludedDirectories'])
             ->setExcludedFiles($merge['excludedFiles'])
-            ->setPattern($merge['pattern']);
+            ->setPatterns($merge['patterns']);
     }
 
     /**
@@ -95,20 +97,20 @@ class CompilerPassFinderOptions implements OptionsInterface
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getPattern(): string
+    public function getPatterns(): array
     {
-        return $this->pattern;
+        return $this->patterns;
     }
 
     /**
-     * @param string $pattern
+     * @param array $patterns
      * @return CompilerPassFinderOptions
      */
-    private function setPattern(string $pattern): CompilerPassFinderOptions
+    private function setPatterns(array $patterns): CompilerPassFinderOptions
     {
-        $this->pattern = $pattern;
+        $this->patterns = $patterns;
         return $this;
     }
 

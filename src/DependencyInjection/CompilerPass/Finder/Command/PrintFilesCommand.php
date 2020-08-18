@@ -40,10 +40,10 @@ class PrintFilesCommand extends SymfonyCommand
                 'l',
                 InputOption::VALUE_REQUIRED,
                 sprintf(
-                    'Regex for matching files that are compiler passes, default: %s',
-                    $defaults->getPattern()
+                    'Comma separated regex for matching files that are compiler passes, default: %s',
+                    implode(', ', $defaults->getPatterns())
                 ),
-                $defaults->getPattern()
+                implode(', ', $defaults->getPatterns())
             );
     }
 
@@ -67,10 +67,12 @@ class PrintFilesCommand extends SymfonyCommand
 
         $output->writeln("<info>[ Services files list ]</info>\n");
 
+        $pattern = $input->getOption('scan-pattern');
+
         try{
             $options = CompilerPassFinderOptions::fromArray([
                 'directories' => explode(',', $input->getOption('scan-directories')),
-                'pattern' => $input->getOption('scan-pattern')
+                'patterns' => null !== $pattern ? explode(',', $pattern) : CompilerPassFinderOptions::DEFAULT_CPASS_PATTERNS
             ]);
 
             $finder = new CompilerPassFinder($options);
