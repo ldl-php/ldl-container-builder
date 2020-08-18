@@ -37,43 +37,47 @@ class CompilerPassFinder implements CompilerPassFinderInterface
         }
 
         $return = new GenericFileCollection();
+        $patterns = $this->options->getPatterns();
 
-        $files = LocalFileFinder::findRegex(
-            $this->options->getPattern(),
-            $this->options->getDirectories()
-        );
+        foreach($patterns as $pattern) {
 
-        /**
-         * @var GenericFileType $file
-         */
-        foreach($files as $key => $file){
-            $skip = false;
+            $files = LocalFileFinder::findRegex(
+                $pattern,
+                $this->options->getDirectories()
+            );
 
-            if(in_array($file->getRealPath(), $this->options->getExcludedFiles(), true)){
-                $skip = true;
-            }
+            /**
+             * @var GenericFileType $file
+             */
+            foreach ($files as $key => $file) {
+                $skip = false;
 
-            foreach($this->options->getExcludedDirectories() as $directory){
-                $path = new UnicodeString($file->getPath());
-                $dir = new UnicodeString($directory);
-
-                if(true === $path->startsWith($dir)){
+                if (in_array($file->getRealPath(), $this->options->getExcludedFiles(), true)) {
                     $skip = true;
-                    break;
                 }
-            }
 
-            if(true === $skip){
-                continue;
-            }
+                foreach ($this->options->getExcludedDirectories() as $directory) {
+                    $path = new UnicodeString($file->getPath());
+                    $dir = new UnicodeString($directory);
 
-            $return->append($file);
+                    if (true === $path->startsWith($dir)) {
+                        $skip = true;
+                        break;
+                    }
+                }
+
+                if (true === $skip) {
+                    continue;
+                }
+
+                $return->append($file);
+            }
         }
 
         if(!count($return)){
             $msg = sprintf(
                 'No files were found matching: "%s" in directories: "%s"',
-                $this->options->getPattern(),
+                implode(', ', $this->options->getPatterns()),
                 implode(', ', $this->options->getDirectories())
             );
 

@@ -8,10 +8,12 @@ use LDL\DependencyInjection\Interfaces\OptionsInterface;
 
 class ContainerWriterOptions implements OptionsInterface
 {
+    public const DEFAULT_CONTAINER_FILE_NAME = 'container.php';
+
     /**
      * @var string
      */
-    private $filename = 'container';
+    private $filename = self::DEFAULT_CONTAINER_FILE_NAME;
 
     /**
      * @var bool
