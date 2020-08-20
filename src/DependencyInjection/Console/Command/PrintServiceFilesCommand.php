@@ -2,29 +2,30 @@
 
 declare(strict_types=1);
 
-namespace LDL\DependencyInjection\CompilerPass\Command;
+namespace LDL\DependencyInjection\Console\Command;
 
-use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
-use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFinderOptions;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use LDL\DependencyInjection\CompilerPass\Finder\Exception\NoFilesFoundException;
+use LDL\DependencyInjection\Service\Finder\ServiceFileFinder;
+use LDL\DependencyInjection\Service\Finder\Exception\NoFilesFoundException;
+use LDL\DependencyInjection\Service\Finder\Options\ServiceFileFinderOptions;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\SplFileInfo as FileInfo;
 
-class PrintFilesCommand extends SymfonyCommand
+class PrintServiceFilesCommand extends SymfonyCommand
 {
-    public const COMMAND_NAME = 'cpass:print';
+    public const COMMAND_NAME = 'services:print';
 
     public function configure() : void
     {
-        $defaults = CompilerPassFinderOptions::fromArray([]);
+        $defaults = ServiceFileFinderOptions::fromArray([]);
 
         $defaultDirectories = implode(', ', $defaults->getDirectories());
+        $defaultFiles = implode(', ', $defaults->getFiles());
 
         $this->setName(self::COMMAND_NAME)
-            ->setDescription('Prints compiler passes')
+            ->setDescription('Prints services files')
             ->addOption(
                 'scan-directories',
                 'd',
@@ -36,14 +37,14 @@ class PrintFilesCommand extends SymfonyCommand
                 $defaultDirectories
             )
             ->addOption(
-                'scan-pattern',
+                'scan-files',
                 'l',
                 InputOption::VALUE_REQUIRED,
                 sprintf(
-                    'Comma separated regex for matching files that are compiler passes, default: %s',
-                    implode(', ', $defaults->getPatterns())
+                    'Comma separated list of files to scan, default: %s',
+                    $defaultFiles
                 ),
-                implode(', ', $defaults->getPatterns())
+                $defaultFiles
             );
     }
 
@@ -67,15 +68,13 @@ class PrintFilesCommand extends SymfonyCommand
 
         $output->writeln("<info>[ Services files list ]</info>\n");
 
-        $pattern = $input->getOption('scan-pattern');
-
         try{
-            $options = CompilerPassFinderOptions::fromArray([
+            $options = ServiceFileFinderOptions::fromArray([
                 'directories' => explode(',', $input->getOption('scan-directories')),
-                'patterns' => null !== $pattern ? explode(',', $pattern) : CompilerPassFinderOptions::DEFAULT_CPASS_PATTERNS
+                'files' => explode(',', $input->getOption('scan-files'))
             ]);
 
-            $finder = new CompilerPassFinder($options);
+            $finder = new ServiceFileFinder($options);
 
             $files = $finder->find();
 
