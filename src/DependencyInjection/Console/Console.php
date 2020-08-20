@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Console;
 
@@ -30,10 +28,21 @@ class Console extends SymfonyApplication
             return $item->getRealPath();
         },\iterator_to_array($commands));
 
+        usort($commands, function($a, $b){
+            return strcmp($a, $b);
+        });
+
         /**
          * @var \SplFileInfo $commandFile
          */
         foreach($commands as $key => $commandFile){
+            /**
+             * Skip abstract class, there is no need to require it due to autoloader kicking in
+             */
+            if(0 === $key){
+                continue;
+            }
+
             require_once $commandFile;
 
             $class = get_declared_classes();
