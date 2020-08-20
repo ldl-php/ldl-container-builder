@@ -8,12 +8,6 @@ use LDL\DependencyInjection\Interfaces\OptionsInterface;
 
 class ServiceCompilerOptions implements OptionsInterface
 {
-
-    /**
-     * @var string
-     */
-    private $dumpFormat = 'php';
-
     /**
      * @var callable
      */
@@ -29,26 +23,15 @@ class ServiceCompilerOptions implements OptionsInterface
      */
     private $onAfterCompile;
 
-    /**
-     * @var array
-     */
-    private $dumpOptions = [];
-
-    private function __construct()
-    {
-    }
-
     public static function fromArray(array $options) : self
     {
         $instance = new static();
         $defaults = get_object_vars($instance);
         $merge = array_merge($defaults, $options);
 
-        return $instance->setDumpFormat($merge['dumpFormat'])
-            ->setOnBeforeCompile($merge['onBeforeCompile'])
+        return $instance->setOnBeforeCompile($merge['onBeforeCompile'])
             ->setOnCompile($merge['onCompile'])
-            ->setOnAfterCompile($merge['onAfterCompile'])
-            ->setDumpOptions($merge['dumpOptions']);
+            ->setOnAfterCompile($merge['onAfterCompile']);
     }
 
     /**
@@ -65,24 +48,6 @@ class ServiceCompilerOptions implements OptionsInterface
     public function jsonSerialize() : array
     {
         return $this->toArray();
-    }
-
-    /**
-     * @return string
-     */
-    public function getDumpFormat() : string
-    {
-        return $this->dumpFormat;
-    }
-
-    /**
-     * @param string $format
-     * @return ServiceCompilerOptions
-     */
-    private function setDumpFormat(string $format) : ServiceCompilerOptions
-    {
-        $this->dumpFormat = $format;
-        return $this;
     }
 
     /**
@@ -136,24 +101,6 @@ class ServiceCompilerOptions implements OptionsInterface
     private function setOnBeforeCompile(callable $fn=null) : ServiceCompilerOptions
     {
         $this->onBeforeCompile = $fn;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDumpOptions(): array
-    {
-        return $this->dumpOptions;
-    }
-
-    /**
-     * @param array $dumpOptions
-     * @return ServiceCompilerOptions
-     */
-    private function setDumpOptions(array $dumpOptions): ServiceCompilerOptions
-    {
-        $this->dumpOptions = $dumpOptions;
         return $this;
     }
 }

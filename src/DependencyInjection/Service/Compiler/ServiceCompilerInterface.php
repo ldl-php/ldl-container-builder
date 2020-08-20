@@ -17,7 +17,7 @@ interface ServiceCompilerInterface
      * @param GenericFileCollection $compilerPassFiles,
      * @param ServiceFileReaderInterface $reader
      * @param CompilerPassReaderInterface $compilerPassReader
-     * @return string
+     * @return void
      * @throws Exception\CompileErrorException
      */
     public function compile(

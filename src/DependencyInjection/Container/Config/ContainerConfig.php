@@ -3,7 +3,6 @@
 namespace LDL\DependencyInjection\Container\Config;
 
 use LDL\DependencyInjection\Interfaces\OptionsInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ContainerConfig implements OptionsInterface
 {

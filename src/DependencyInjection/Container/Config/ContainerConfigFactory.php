@@ -11,7 +11,6 @@ use LDL\DependencyInjection\Service\Finder\Exception\NoFilesFoundException as No
 use LDL\DependencyInjection\Service\Finder\ServiceFileFinderInterface;
 use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
 use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ContainerConfigFactory
 {
