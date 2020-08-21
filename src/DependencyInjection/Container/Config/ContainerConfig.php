@@ -2,12 +2,11 @@
 
 namespace LDL\DependencyInjection\Container\Config;
 
+use LDL\DependencyInjection\Container\Writer\Options\ContainerWriterOptions;
 use LDL\DependencyInjection\Interfaces\OptionsInterface;
 
 class ContainerConfig implements OptionsInterface
 {
-    public const DEFAULT_OUTPUT_FILENAME = 'container';
-
     public const DEFAULT_GENERATED_FILENAME = 'container-config.json';
 
     public const DEFAULT_DUMP_OPTIONS = [
@@ -19,7 +18,7 @@ class ContainerConfig implements OptionsInterface
     /**
      * @var string
      */
-    private $outputFilename = self::DEFAULT_OUTPUT_FILENAME;
+    private $containerFileName = ContainerWriterOptions::DEFAULT_CONTAINER_FILENAME;
 
     /**
      * @var string
@@ -82,7 +81,7 @@ class ContainerConfig implements OptionsInterface
         $defaults = get_object_vars($instance);
         $merge = array_replace_recursive($defaults, $options);
 
-        return $instance->setOutputFilename($merge['generation']['outputFilename'])
+        return $instance->setContainerFileName($merge['generation']['containerFilename'])
             ->setGeneratedAs($merge['generation']['generatedAs'])
             ->setDate($merge['generation']['date'])
             ->setDumpOptions($merge['container']['dump'])
@@ -103,7 +102,7 @@ class ContainerConfig implements OptionsInterface
     {
         return [
             'generation' => [
-                'outputFilename' => $this->getOutputFilename(),
+                'containerFilename' => $this->getContainerFileName(),
                 'generatedAs' => $this->getGeneratedAs(),
                 'date' => $this->getDate()->format(\DateTimeInterface::W3C)
             ],
@@ -148,18 +147,18 @@ class ContainerConfig implements OptionsInterface
     /**
      * @return string
      */
-    public function getOutputFilename(): string
+    public function getContainerFileName(): string
     {
-        return $this->outputFilename;
+        return $this->containerFileName;
     }
 
     /**
-     * @param string $outputFilename
+     * @param string $containerFileName
      * @return ContainerConfig
      */
-    private function setOutputFilename(string $outputFilename): ContainerConfig
+    private function setContainerFileName(string $containerFileName): ContainerConfig
     {
-        $this->outputFilename = $outputFilename;
+        $this->containerFileName = $containerFileName;
         return $this;
     }
 

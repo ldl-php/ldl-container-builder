@@ -8,12 +8,12 @@ use LDL\DependencyInjection\Interfaces\OptionsInterface;
 
 class ContainerWriterOptions implements OptionsInterface
 {
-    public const DEFAULT_CONTAINER_FILE_NAME = 'container.php';
+    public const DEFAULT_CONTAINER_FILENAME = 'container.php';
 
     /**
      * @var string
      */
-    private $filename = self::DEFAULT_CONTAINER_FILE_NAME;
+    private $filename = self::DEFAULT_CONTAINER_FILENAME;
 
     /**
      * @var bool
@@ -28,21 +28,15 @@ class ContainerWriterOptions implements OptionsInterface
     public static function fromArray(array $options) : self
     {
         $instance = new static();
+        $instance->setFileName(
+            sprintf(
+                '%s%s%s',
+                getcwd(),
+                DIRECTORY_SEPARATOR,
+                self::DEFAULT_CONTAINER_FILENAME
+            )
+        );
         $defaults = get_object_vars($instance);
-
-        foreach($options as $opt=>$value){
-            if(array_key_exists($opt, $defaults)) {
-                continue;
-            }
-            $msg = sprintf(
-                'Unknown option: "%s", valid options are: %s',
-                $opt,
-                implode(', ', array_keys($defaults))
-            );
-
-            throw new Exception\UnknownOptionException($msg);
-        }
-
         $merge = array_merge($defaults, $options);
 
         return $instance->setFilename($merge['filename'])

@@ -54,7 +54,7 @@ class ContainerConfigFactory
 
         return ContainerConfig::fromArray([
             'generation' => [
-                'outputFilename' => $containerFileWriter->getOptions()->getFilename(),
+                'containerFilename' => $containerFileWriter->getOptions()->getFilename(),
                 'generatedAs' => $generatedAs ?? ContainerConfig::DEFAULT_GENERATED_FILENAME,
                 'date' => $date !== null ? $date->setTimezone($utcTZ) : new \DateTime("now", $utcTZ)
             ],

@@ -9,6 +9,7 @@ use LDL\DependencyInjection\CompilerPass\Reader\Options\CompilerPassReaderOption
 use LDL\DependencyInjection\Container\Builder\LDLContainerBuilder;
 use LDL\DependencyInjection\Container\Builder\LDLContainerBuilderInterface;
 use LDL\DependencyInjection\Container\Config\ContainerConfig;
+use LDL\DependencyInjection\Container\Writer\Options\ContainerWriterOptions;
 use LDL\DependencyInjection\Service\Compiler\Options\ServiceCompilerOptions;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
 use LDL\DependencyInjection\Service\Finder\Options\ServiceFileFinderOptions;
@@ -41,18 +42,14 @@ abstract class AbstractContainerCommand extends SymfonyCommand
     {
         $finderDefaults = ServiceFileFinderOptions::fromArray([]);
         $cpassDefaults = CompilerPassFinderOptions::fromArray([]);
+        $containerWriter = ContainerWriterOptions::fromArray([]);
 
         $this->addArgument(
             'output-file',
-            InputArgument::REQUIRED,
-            'Name of the output file'
+            InputArgument::OPTIONAL,
+            'Name of the output file',
+            $containerWriter->getFilename()
         )
-            ->addArgument(
-                'dump-format',
-                InputArgument::OPTIONAL,
-                'Dump container in a specific format',
-                $this->dumpOptions['format']
-            )
             ->addOption(
                 'force-overwrite',
                 'w',
