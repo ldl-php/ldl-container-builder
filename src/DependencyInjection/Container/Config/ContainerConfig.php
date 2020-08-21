@@ -2,11 +2,12 @@
 
 namespace LDL\DependencyInjection\Container\Config;
 
-use LDL\DependencyInjection\Container\Writer\Options\ContainerWriterOptions;
 use LDL\DependencyInjection\Interfaces\OptionsInterface;
 
 class ContainerConfig implements OptionsInterface
 {
+    public const DEFAULT_CONTAINER_FILENAME = 'container.php';
+
     public const DEFAULT_GENERATED_FILENAME = 'container-config.json';
 
     public const DEFAULT_DUMP_OPTIONS = [
@@ -18,7 +19,7 @@ class ContainerConfig implements OptionsInterface
     /**
      * @var string
      */
-    private $containerFileName = ContainerWriterOptions::DEFAULT_CONTAINER_FILENAME;
+    private $containerFileName = self::DEFAULT_CONTAINER_FILENAME;
 
     /**
      * @var string

@@ -29,7 +29,7 @@ class ContainerConfigFactory
         $utcTZ = new \DateTimeZone("UTC");
 
         try{
-            $servicesFiles = $serviceFileFinder->find(true);
+            $servicesFiles = $serviceFileFinder->find();
         }catch(NoServicesFoundException $e){
             $servicesFiles = new GenericFileCollection();
         }
@@ -41,7 +41,7 @@ class ContainerConfigFactory
         }
 
         try{
-            $compilerPassFiles = $compilerPassFinder->find(true);
+            $compilerPassFiles = $compilerPassFinder->find();
         }catch(NoCompilerPassFoundException $e){
             $compilerPassFiles = new GenericFileCollection();
         }
