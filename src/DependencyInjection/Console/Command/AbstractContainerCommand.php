@@ -51,6 +51,24 @@ abstract class AbstractContainerCommand extends SymfonyCommand
             $containerWriter->getFilename()
         )
             ->addOption(
+                'namespace',
+                's',
+                InputOption::VALUE_OPTIONAL,
+                'Namespace of the generated container'
+            )
+            ->addOption(
+                'className',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'Classname of the generated container'
+            )
+            ->addOption(
+                'format',
+                't',
+                InputOption::VALUE_OPTIONAL,
+                'Format of the output container'
+            )
+            ->addOption(
                 'force-overwrite',
                 'w',
                 InputOption::VALUE_NONE,
@@ -92,12 +110,6 @@ abstract class AbstractContainerCommand extends SymfonyCommand
                 'Ignore syntax errors in service files'
             )
             ->addOption(
-                'dump-options',
-                'j',
-                InputOption::VALUE_OPTIONAL,
-                'Dump string options in json format'
-            )
-            ->addOption(
                 'cpass-pattern',
                 'p',
                 InputOption::VALUE_OPTIONAL,
@@ -126,8 +138,21 @@ abstract class AbstractContainerCommand extends SymfonyCommand
         $findFirst = $input->getOption('find-first');
         $excludedDirectories = $input->getOption('excluded-directories');
         $cpassPattern = $input->getOption('cpass-pattern');
+        $containerNamespace = $input->getOption('namespace');
+        $containerName = $input->getOption('className');
+        $containerFormat = $input->getOption('format');
 
-        $dumpOptions = $input->getOption('dump-options');
+        if(null !== $containerNamespace){
+            $this->dumpOptions['namespace'] = $containerNamespace;
+        }
+
+        if(null !== $containerName){
+            $this->dumpOptions['class'] = $containerName;
+        }
+
+        if(null !== $containerFormat){
+            $this->dumpOptions['format'] = $containerFormat;
+        }
 
         $compilerProgress = new ProgressBar($output);
         $compilerProgress->setOverwrite(true);
@@ -138,14 +163,6 @@ abstract class AbstractContainerCommand extends SymfonyCommand
             'files' => explode(',', $input->getOption('scan-files')),
             'findFirst' => null !== $findFirst ? explode(',', $findFirst) : []
         ]);
-
-        if(null !== $dumpOptions){
-            $this->dumpOptions = json_decode($dumpOptions, true);
-
-            if(json_last_error() !== JSON_ERROR_NONE){
-                throw new \RuntimeException("Invalid json format");
-            }
-        }
 
         $serviceCompilerOptions = ServiceCompilerOptions::fromArray([
             'onBeforeCompile' => function($container, $files) use ($compilerProgress){

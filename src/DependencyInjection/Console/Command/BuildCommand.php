@@ -17,7 +17,7 @@ class BuildCommand extends AbstractContainerCommand
         parent::configure();
 
         $this->setName(self::COMMAND_NAME)
-            ->setDescription('Build compiled services.xml file');
+            ->setDescription('Build Container');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)

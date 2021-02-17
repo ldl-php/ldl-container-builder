@@ -64,8 +64,8 @@ class CompilerPassValidator
 
         $class = $classesInFile[0];
         $class = preg_replace('#\s+#',' ', $class);
-        $class = substr($class, strpos($class, ' ')+1);
-        $class = substr($class, 0,strpos($class, ' '));
+        $class = substr($class, (int) strpos($class, ' ')+1);
+        $class = substr($class, 0, (int) strpos($class, ' '));
 
         if('' !== $namespace){
             $class = sprintf('%s\\%s', $namespace,$class);
