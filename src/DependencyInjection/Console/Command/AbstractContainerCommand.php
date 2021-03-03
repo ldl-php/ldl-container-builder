@@ -4,8 +4,8 @@ namespace LDL\DependencyInjection\Console\Command;
 
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
 use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFinderOptions;
-use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReader;
-use LDL\DependencyInjection\CompilerPass\Reader\Options\CompilerPassReaderOptions;
+use LDL\DependencyInjection\CompilerPass\Parser\CompilerPassParser;
+use LDL\DependencyInjection\CompilerPass\Parser\Options\CompilerPassReaderOptions;
 use LDL\DependencyInjection\Container\Builder\LDLContainerBuilder;
 use LDL\DependencyInjection\Container\Builder\LDLContainerBuilderInterface;
 use LDL\DependencyInjection\Container\Config\ContainerConfig;
@@ -14,8 +14,8 @@ use LDL\DependencyInjection\Service\Compiler\Options\ServiceCompilerOptions;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
 use LDL\DependencyInjection\Service\Finder\Options\ServiceFileFinderOptions;
 use LDL\DependencyInjection\Service\Finder\ServiceFileFinder;
-use LDL\DependencyInjection\Service\Reader\Options\ServiceReaderOptions;
-use LDL\DependencyInjection\Service\Reader\ServiceFileReader;
+use LDL\DependencyInjection\Service\File\Parser\Options\ServiceFileParserOptions;
+use LDL\DependencyInjection\Service\File\Parser\ServiceFileParser;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -159,7 +159,7 @@ abstract class AbstractContainerCommand extends SymfonyCommand
             }
         ]);
 
-        $serviceReaderOptions = ServiceReaderOptions::fromArray([
+        $serviceReaderOptions = ServiceFileParserOptions::fromArray([
             'ignoreErrors' => (bool)$input->getOption('ignore-read-errors')
         ]);
 
@@ -176,9 +176,9 @@ abstract class AbstractContainerCommand extends SymfonyCommand
         $this->container = new LDLContainerBuilder(
             new ServiceFileFinder($serviceFinderOptions),
             new ServiceCompiler($serviceCompilerOptions),
-            new ServiceFileReader($serviceReaderOptions),
+            new ServiceFileParser($serviceReaderOptions),
             new CompilerPassFinder($compilerPassFinderOptions),
-            new CompilerPassReader($compilerPassReaderOptions)
+            new CompilerPassParser($compilerPassReaderOptions)
         );
     }
 }

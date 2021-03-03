@@ -4,12 +4,12 @@ namespace LDL\DependencyInjection\Container\Config;
 
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinderInterface;
 use LDL\DependencyInjection\CompilerPass\Finder\Exception\NoFilesFoundException as NoCompilerPassFoundException;
-use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
+use LDL\DependencyInjection\CompilerPass\Parser\CompilerPassParserInterface;
 use LDL\DependencyInjection\Container\Writer\ContainerFileWriterInterface;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompilerInterface;
 use LDL\DependencyInjection\Service\Finder\Exception\NoFilesFoundException as NoServicesFoundException;
 use LDL\DependencyInjection\Service\Finder\ServiceFileFinderInterface;
-use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
+use LDL\DependencyInjection\Service\File\Parser\ServiceFileParserInterface;
 use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
 
 class ContainerConfigFactory
@@ -17,9 +17,9 @@ class ContainerConfigFactory
     public static function factory(
         ServiceFileFinderInterface $serviceFileFinder,
         ServiceCompilerInterface $serviceCompiler,
-        ServiceFileReaderInterface $serviceFileReader,
+        ServiceFileParserInterface $serviceFileReader,
         CompilerPassFinderInterface $compilerPassFinder,
-        CompilerPassReaderInterface $compilerPassReader,
+        CompilerPassParserInterface $compilerPassReader,
         ContainerFileWriterInterface $containerFileWriter,
         array $dumpOptions = null,
         string $generatedAs = null,

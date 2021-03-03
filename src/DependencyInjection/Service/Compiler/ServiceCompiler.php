@@ -1,14 +1,12 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\Compiler;
 
-use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
-use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
-use LDL\FS\Type\AbstractFileType;
-use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
+use LDL\DependencyInjection\CompilerPass\Parser\CompilerPassParserInterface;
+use LDL\DependencyInjection\Service\File\Parser\ServiceFileParserInterface;
+use LDL\FS\Type\FileCollection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class ServiceCompiler implements ServiceCompilerInterface
 {
@@ -24,10 +22,10 @@ class ServiceCompiler implements ServiceCompilerInterface
 
     public function compile(
         ContainerBuilder $container,
-        GenericFileCollection $serviceFiles,
-        ServiceFileReaderInterface $reader,
-        GenericFileCollection $compilerPassFiles,
-        CompilerPassReaderInterface $compilerPassReader
+        FileCollection $serviceFiles,
+        ServiceFileParserInterface $reader,
+        FileCollection $compilerPassFiles,
+        CompilerPassParserInterface $compilerPassReader
     ) : void
     {
 
@@ -36,17 +34,17 @@ class ServiceCompiler implements ServiceCompilerInterface
         }
 
         /**
-         * @var AbstractFileType $file
+         * @var SplFileInfo $file
          */
         foreach($compilerPassFiles as $file){
-            $compilerPassReader->read($container, $file);
+            $compilerPassReader->parse($container, $file);
         }
 
         /**
-         * @var AbstractFileType $file
+         * @var SplFileInfo $file
          */
         foreach($serviceFiles as $file){
-            $reader->read($container, $file);
+            $reader->parse($container, $file);
 
             if($this->options->getOnCompile()){
                 $this->options->getOnCompile()($container, $file);

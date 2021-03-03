@@ -1,10 +1,11 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Interfaces;
 
-interface OptionsInterface extends \JsonSerializable
+use LDL\Framework\Base\Contracts\ArrayFactoryInterface;
+use LDL\Framework\Base\Contracts\ToArrayInterface;
+
+interface OptionsInterface extends \JsonSerializable, ArrayFactoryInterface, ToArrayInterface
 {
     /**
      * @return array

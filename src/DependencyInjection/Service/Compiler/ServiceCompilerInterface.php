@@ -1,31 +1,29 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\Compiler;
 
-use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
-use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
-use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
+use LDL\DependencyInjection\CompilerPass\Parser\CompilerPassParserInterface;
+use LDL\FS\Type\FileCollection;
+use LDL\DependencyInjection\Service\File\Parser\ServiceFileParserInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface ServiceCompilerInterface
 {
     /**
      * @param ContainerBuilder $container
-     * @param GenericFileCollection $files
-     * @param GenericFileCollection $compilerPassFiles,
-     * @param ServiceFileReaderInterface $reader
-     * @param CompilerPassReaderInterface $compilerPassReader
+     * @param FileCollection $files
+     * @param ServiceFileParserInterface $reader
+     * @param FileCollection $compilerPassFiles,
+     * @param CompilerPassParserInterface $compilerPassReader
      * @return void
      * @throws Exception\CompileErrorException
      */
     public function compile(
         ContainerBuilder $container,
-        GenericFileCollection $files,
-        ServiceFileReaderInterface $reader,
-        GenericFileCollection $compilerPassFiles,
-        CompilerPassReaderInterface $compilerPassReader
+        FileCollection $files,
+        ServiceFileParserInterface $reader,
+        FileCollection $compilerPassFiles,
+        CompilerPassParserInterface $compilerPassReader
     ) : void;
 
     /**

@@ -5,8 +5,8 @@
     "keywords": [
         "DIC",
         "Symfony",
-	"compiler",
-	"services"
+	    "compiler",
+	    "services"
     ],
     "homepage": "https://github.com/pthreat/ldl-container-builder",
     "license": "MIT",
@@ -20,11 +20,14 @@
             "email": "gonzalocoda@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=7.3",
         "symfony/console": "~5.0",
-        "ldl-framework/file-finder": "^0.0.1",
-        "ldl-framework/file-common": "^0.0.1",
+        "ldl-framework/file-finder": "dev-master",
+        "ldl-framework/file-common": "dev-master",
+	"ldl-framework/framework-base": "dev-master",
         "symfony/dependency-injection": "^5.1",
         "symfony/config": "^5.1",
         "symfony/yaml": "^5.1",

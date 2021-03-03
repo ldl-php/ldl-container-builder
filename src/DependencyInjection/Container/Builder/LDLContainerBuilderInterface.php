@@ -3,20 +3,18 @@
 namespace LDL\DependencyInjection\Container\Builder;
 
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinderInterface;
-use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
+use LDL\DependencyInjection\CompilerPass\Parser\CompilerPassParserInterface;
 use LDL\DependencyInjection\Service\Compiler\Exception\CompileErrorException;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompilerInterface;
-use LDL\DependencyInjection\Service\Finder\Exception\NoFilesFoundException as NoServicesFoundException;
 use LDL\DependencyInjection\Container\Writer\Exception\FileAlreadyExistsException;
-use LDL\DependencyInjection\Service\Finder\ServiceFileFinderInterface;
-use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
+use LDL\DependencyInjection\Service\File\Finder\ServiceFileFinderInterface;
+use LDL\DependencyInjection\Service\File\Parser\ServiceFileParserInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface LDLContainerBuilderInterface
 {
     /**
      * @throws CompileErrorException
-     * @throws NoServicesFoundException
      * @throws FileAlreadyExistsException
      */
     public function build(): ContainerBuilder;
@@ -27,9 +25,9 @@ interface LDLContainerBuilderInterface
     public function getServiceFinder() : ServiceFileFinderInterface;
 
     /**
-     * @return ServiceFileReaderInterface
+     * @return ServiceFileParserInterface
      */
-    public function getServiceReader(): ServiceFileReaderInterface;
+    public function getServiceReader(): ServiceFileParserInterface;
 
     /**
      * @return ServiceCompilerInterface
@@ -42,7 +40,7 @@ interface LDLContainerBuilderInterface
     public function getCompilerPassFinder() : CompilerPassFinderInterface;
 
     /**
-     * @return CompilerPassReaderInterface
+     * @return CompilerPassParserInterface
      */
-    public function getCompilerPassReader() : CompilerPassReaderInterface;
+    public function getCompilerPassReader() : CompilerPassParserInterface;
 }
