@@ -1,8 +1,20 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 require __DIR__.'/../vendor/autoload.php';
+use LDL\DependencyInjection\Console\ContainerBuilderApplication;
+use LDL\DependencyInjection\Console\Command\BuildCommand;
+use LDL\DependencyInjection\Console\Command\PrintCompilerPassFilesCommand;
+use LDL\DependencyInjection\Console\Command\ContainerGraphVizCommand;
+use LDL\DependencyInjection\Console\Command\PrintServiceFilesCommand;
 
-$console = new LDL\DependencyInjection\Console\Console();
+$app = new ContainerBuilderApplication();
 
-$console->run();
+$app->addCommands([
+   new BuildCommand(),
+   //new PrintCompilerPassFilesCommand(),
+   //new PrintServiceFilesCommand(),
+   //new ContainerGraphVizCommand()
+]);
+
+$app->run();

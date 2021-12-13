@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\Compiler;
 
-use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReaderInterface;
-use LDL\DependencyInjection\Service\Reader\ServiceFileReaderInterface;
-use LDL\FS\Type\AbstractFileType;
-use LDL\FS\Type\Types\Generic\Collection\GenericFileCollection;
+use LDL\DependencyInjection\Service\Compiler\Directive\Collection\ServiceCompilerDirectiveCollection;
+use LDL\DependencyInjection\Service\File\ServiceFileCollection;
+use LDL\DependencyInjection\Service\Helper\ServiceFileHelper;
+use LDL\File\Contracts\FileInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ServiceCompiler implements ServiceCompilerInterface
@@ -17,52 +17,58 @@ class ServiceCompiler implements ServiceCompilerInterface
      */
     private $options;
 
-    public function __construct(Options\ServiceCompilerOptions $options = null)
-    {
-        $this->options = $options ?? Options\ServiceCompilerOptions::fromArray([]);
+    /**
+     * @var ServiceCompilerDirectiveCollection
+     */
+    private $directives;
+
+    public function __construct(
+        ServiceCompilerDirectiveCollection $directives = null,
+        Options\ServiceCompilerOptions $options = null
+    ) {
+        $this->options = $options;
+        $this->directives = $directives;
     }
 
     public function compile(
-        ContainerBuilder $container,
-        GenericFileCollection $serviceFiles,
-        ServiceFileReaderInterface $reader,
-        GenericFileCollection $compilerPassFiles,
-        CompilerPassReaderInterface $compilerPassReader
-    ) : void
-    {
-
-        if($this->options->getOnBeforeCompile()){
-            $this->options->getOnBeforeCompile()($container, $serviceFiles, $compilerPassFiles);
-        }
+        ContainerBuilder $builder,
+        ServiceFileCollection $serviceFiles
+    ): void {
+        $definedServices = [];
 
         /**
-         * @var AbstractFileType $file
+         * @var FileInterface $file
          */
-        foreach($compilerPassFiles as $file){
-            $compilerPassReader->read($container, $file);
-        }
+        foreach ($serviceFiles as $file) {
+            if (null !== $this->options && $this->options->getOnBeforeCompile()) {
+                $this->options->getOnBeforeCompile()->call($builder, $serviceFiles);
+            }
 
-        /**
-         * @var AbstractFileType $file
-         */
-        foreach($serviceFiles as $file){
-            $reader->read($container, $file);
+            $loader = ServiceFileHelper::getLoaderByExtension($file, $builder);
 
-            if($this->options->getOnCompile()){
-                $this->options->getOnCompile()($container, $file);
+            if (null !== $this->directives) {
+                $this->directives->compile($builder, $file, $definedServices);
+
+                $definedServices[$file->getPath()] = ServiceFileHelper::getDefinedServicesInFile($file)
+                    ->toPrimitiveArray(true);
+            }
+
+            try {
+                $loader->load($file);
+            } catch (\Exception $e) {
+                if (null !== $this->options && $this->options->getOnCompileError()) {
+                    $this->options->getOnCompileError()->call($builder, $loader, $file);
+                }
+            }
+
+            if (null !== $this->options && $this->options->getOnCompile()) {
+                $this->options->getOnCompile()->call($builder, $file, $loader);
             }
         }
 
-        if($this->options->getOnAfterCompile()){
-            $this->options->getOnAfterCompile()($container, $serviceFiles, $compilerPassFiles);
+        if (null !== $this->options && $this->options->getOnAfterCompile()) {
+            $this->options->getOnAfterCompile()->call($builder, $serviceFiles);
         }
-
-        try{
-            $container->compile();
-        }catch(\Exception $e){
-            throw new Exception\CompileErrorException($e->getMessage());
-        }
-
     }
 
     /**

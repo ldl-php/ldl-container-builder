@@ -17,6 +17,17 @@
 			<tag name="example.application" />
 		</service>
 
+		<service
+				id="LDL.example.application.admin"
+				class="LDL\Example\Build\Application\Admin\Application"
+				lazy="true"
+				public="true"
+		>
+			<argument type="string">admin</argument>
+
+			<tag name="example.application" />
+		</service>
+
 	</services>
 
 </container>

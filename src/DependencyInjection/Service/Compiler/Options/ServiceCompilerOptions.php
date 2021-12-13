@@ -5,25 +5,31 @@ declare(strict_types=1);
 namespace LDL\DependencyInjection\Service\Compiler\Options;
 
 use LDL\DependencyInjection\Interfaces\OptionsInterface;
+use LDL\Framework\Base\Collection\CallableCollectionInterface;
 
 class ServiceCompilerOptions implements OptionsInterface
 {
     /**
-     * @var callable
+     * @var ?CallableCollectionInterface
      */
     private $onBeforeCompile;
 
     /**
-     * @var callable
+     * @var ?CallableCollectionInterface
      */
     private $onCompile;
 
     /**
-     * @var callable
+     * @var ?CallableCollectionInterface
+     */
+    private $onCompileError;
+
+    /**
+     * @var ?CallableCollectionInterface
      */
     private $onAfterCompile;
 
-    public static function fromArray(array $options) : self
+    public static function fromArray(array $options): self
     {
         $instance = new static();
         $defaults = get_object_vars($instance);
@@ -31,76 +37,67 @@ class ServiceCompilerOptions implements OptionsInterface
 
         return $instance->setOnBeforeCompile($merge['onBeforeCompile'])
             ->setOnCompile($merge['onCompile'])
+            ->setOnCompileError($merge['onCompileError'])
             ->setOnAfterCompile($merge['onAfterCompile']);
     }
 
-    /**
-     * @return array
-     */
-    public function toArray() : array
+    public function toArray(bool $useKeys = null): array
     {
         return get_object_vars($this);
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize() : array
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
 
-    /**
-     * @return callable|null
-     */
-    public function getOnBeforeCompile() : ?callable
+    public function getOnBeforeCompile(): ?CallableCollectionInterface
     {
         return $this->onBeforeCompile;
     }
 
-    /**
-     * @return callable|null
-     */
-    public function getOnCompile() : ?callable
+    public function getOnCompile(): ?CallableCollectionInterface
     {
         return $this->onCompile;
     }
 
-    /**
-     * @return callable|null
-     */
-    public function getOnAfterCompile() : ?callable
+    public function getOnAfterCompile(): ?CallableCollectionInterface
     {
         return $this->onAfterCompile;
     }
 
-    /**
-     * @param callable $fn
-     * @return ServiceCompilerOptions
-     */
-    private function setOnAfterCompile(callable $fn=null) : ServiceCompilerOptions
+    public function getOnCompileError(): ?CallableCollectionInterface
+    {
+        return $this->onCompileError;
+    }
+
+    //<editor-fold desc="Private methods">
+    private function setOnAfterCompile(CallableCollectionInterface $fn = null): ServiceCompilerOptions
     {
         $this->onAfterCompile = $fn;
+
         return $this;
     }
 
-    /**
-     * @param callable $fn
-     * @return ServiceCompilerOptions
-     */
-    private function setOnCompile(callable $fn=null) : ServiceCompilerOptions
+    private function setOnCompile(CallableCollectionInterface $fn = null): ServiceCompilerOptions
     {
         $this->onCompile = $fn;
+
         return $this;
     }
 
-    /**
-     * @param callable|null $fn
-     * @return ServiceCompilerOptions
-     */
-    private function setOnBeforeCompile(callable $fn=null) : ServiceCompilerOptions
+    private function setOnCompileError(CallableCollectionInterface $fn = null): ServiceCompilerOptions
     {
-        $this->onBeforeCompile = $fn;
+        $this->onCompileError = $fn;
+
         return $this;
     }
+
+    private function setOnBeforeCompile(CallableCollectionInterface $fn = null): ServiceCompilerOptions
+    {
+        $this->onBeforeCompile = $fn;
+
+        return $this;
+    }
+    //</editor-fold>
 }

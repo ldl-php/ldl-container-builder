@@ -1,0 +1,8 @@
+Find service files, no exception must be thrown
+
+Found /home/ldl/projects/ldl-container-builder/example/Build/Application/Admin/services.xml
+Found /home/ldl/projects/ldl-container-builder/example/Build/Application/User/services.xml
+Found /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Mailer/services.xml
+Found /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Template/services.xml
+
+Found 4 files

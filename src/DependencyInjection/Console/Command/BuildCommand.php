@@ -1,88 +1,135 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Console\Command;
 
-use LDL\DependencyInjection\Container\Config\ContainerConfigFactory;
-use LDL\DependencyInjection\Container\Writer\ContainerFileWriter;
-use LDL\DependencyInjection\Container\Writer\Options\ContainerWriterOptions;
+use LDL\DependencyInjection\CompilerPass\Compiler\CompilerPassCompiler;
+use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFileFinder;
+use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFileFinderOptions;
+use LDL\DependencyInjection\Container\Builder\LDLContainerBuilder;
+use LDL\DependencyInjection\Container\Helper\ContainerHelper;
+use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
+use LDL\DependencyInjection\Service\File\Finder\Options\ServiceFileFinderOptions;
+use LDL\DependencyInjection\Service\File\Finder\ServiceFileFinder;
+use LDL\Framework\Base\Collection\CallableCollection;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BuildCommand extends AbstractContainerCommand
+class BuildCommand extends Command
 {
-    public const COMMAND_NAME = 'container:build';
+    public const COMMAND_NAME = 'ldl:container:build';
 
-    public function configure() : void
+    public function configure(): void
     {
         parent::configure();
 
         $this->setName(self::COMMAND_NAME)
-            ->setDescription('Build Container');
+            ->setDescription('Builds dependency injection container')
+            ->setDefinition(
+                new InputDefinition([
+                    new InputArgument(
+                      'directories',
+                        InputArgument::REQUIRED,
+                        'Directories to search'
+                    ),
+                    new InputArgument(
+                        'output-file',
+                        InputArgument::OPTIONAL,
+                        'Output file name',
+                    ),
+                    new InputOption(
+                      'exclude-directories',
+                      'e',
+                      InputOption::VALUE_REQUIRED
+                    ),
+                    new InputOption(
+                        'service-files',
+                        's',
+                        InputOption::VALUE_REQUIRED,
+                        'Service file patterns',
+                        'services.xml,services.yml,services.ini,services.php'
+                    ),
+                    new InputOption(
+                        'cpass-file-pattern',
+                        'c',
+                        InputOption::VALUE_REQUIRED,
+                        CompilerPassFileFinderOptions::DEFAULT_FILE_PATTERN
+                    ),
+                ])
+            );
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            parent::execute($input, $output);
-
-            $this->build($input, $output);
-
-            return parent::EXIT_SUCCESS;
-
-        }catch(\Exception $e){
-            $output->writeln("<error>{$e->getMessage()}</error>");
-
-            return parent::EXIT_ERROR;
-        }
-    }
-
-    private function build(
-        InputInterface $input,
-        OutputInterface $output
-    ) : void
-    {
-        $start = hrtime(true);
-
-        try{
-
-            $title = '[ Building compiled services file ]';
+            $title = '[ LDL DIC Builder ]';
 
             $output->writeln("\n<info>$title</info>\n");
+            $output->writeln('<info>Finding service files ...</info>');
 
-            $container = $this->container->build();
+            $serviceFiles = (new ServiceFileFinder(
+                ServiceFileFinderOptions::fromArray([
+                    'directories' => explode(',', $input->getArgument('directories')),
+                    'files' => explode(',', $input->getOption('service-files')),
+                    'excludedDirectories' => explode(',', (string) $input->getOption('exclude-directories')),
+                ]),
+                new CallableCollection([
+                    static function ($f) use ($output) {
+                        $output->writeln("<info>Found service file: $f</info>");
+                    },
+                ])
+            ))->find();
 
-            $containerWriterOptions = ContainerWriterOptions::fromArray([
-                'filename' => $input->getArgument('output-file'),
-                'force' => (bool) $input->getOption('force-overwrite'),
-            ]);
+            $output->writeln(sprintf('<info>Found %s service files</info>', count($serviceFiles)));
 
-            $writer = new ContainerFileWriter($containerWriterOptions);
+            $output->writeln('<info>Finding compiler pass files ...</info>');
 
-            $writer->write(ContainerConfigFactory::factory(
-                $this->container->getServiceFinder(),
-                $this->container->getServiceCompiler(),
-                $this->container->getServiceReader(),
-                $this->container->getCompilerPassFinder(),
-                $this->container->getCompilerPassReader(),
-                $writer,
-                $this->dumpOptions
-            ), $container);
+            $compilerPassFiles = (new CompilerPassFileFinder(
+                CompilerPassFileFinderOptions::fromArray([
+                    'directories' => explode(',', $input->getArgument('directories')),
+                    'excludedDirectories' => explode(',', (string) $input->getOption('exclude-directories')),
+                ]),
+                new CallableCollection([
+                    static function ($f) use ($output) {
+                        $output->writeln("<info>Found compiler pass file: $f</info>");
+                    },
+                ])
+            ))->find();
 
-            $output->writeln("");
+            $output->writeln(sprintf('<info>Found %s compiler pass files</info>', count($compilerPassFiles)));
 
-        }catch(\Exception $e) {
+            $builder = new LDLContainerBuilder(
+                new ServiceCompiler(),
+                new CompilerPassCompiler()
+            );
 
-            $output->writeln("\n\n<error>Build failed!</error>\n");
-            $output->writeln((string)($e->getMessage()));
-            $output->writeln("Scanned directories: {$input->getOption('scan-directories')}");
-            $output->writeln("Scanned files: {$input->getOption('scan-files')}");
+            $container = $builder->build(
+                $serviceFiles,
+                $compilerPassFiles
+            );
 
+            $output->writeln(
+                sprintf(
+                    '<info>Found %s service definitions</info>',
+                    count($container->getServiceIds())
+                )
+            );
+
+            if ($input->getArgument('output-file')) {
+                $output->writeln("<info>Writing container to {$input->getArgument('output-file')}</info>");
+                ContainerHelper::write($container, $input->getArgument('output-file'));
+            }
+
+            return self::SUCCESS;
+        } catch (\Exception $e) {
+            $output->writeln("<error>{$e->getMessage()}</error>");
+
+            return self::FAILURE;
         }
-
-        $end = hrtime(true);
-        $total = round((($end - $start) / 1e+6) / 1000,2);
-
-        $output->writeln("\n<info>Took: $total seconds</info>");
     }
-
 }

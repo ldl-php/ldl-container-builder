@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Console\Command;
 
+use LDL\DependencyInjection\Service\File\Finder\Exception\NoFilesFoundException;
+use LDL\DependencyInjection\Service\File\Finder\Options\ServiceFileFinderOptions;
+use LDL\DependencyInjection\Service\File\Finder\ServiceFileFinder;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use LDL\DependencyInjection\Service\Finder\ServiceFileFinder;
-use LDL\DependencyInjection\Service\Finder\Exception\NoFilesFoundException;
-use LDL\DependencyInjection\Service\Finder\Options\ServiceFileFinderOptions;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +17,7 @@ class PrintServiceFilesCommand extends SymfonyCommand
 {
     public const COMMAND_NAME = 'services:print';
 
-    public function configure() : void
+    public function configure(): void
     {
         $defaults = ServiceFileFinderOptions::fromArray([]);
 
@@ -52,9 +52,11 @@ class PrintServiceFilesCommand extends SymfonyCommand
     {
         try {
             $this->printFiles($input, $output);
+
             return 0;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
+
             return 1;
         }
     }
@@ -62,23 +64,21 @@ class PrintServiceFilesCommand extends SymfonyCommand
     private function printFiles(
         InputInterface $input,
         OutputInterface $output
-    ) : void
-    {
+    ): void {
         $total = 0;
 
         $output->writeln("<info>[ Services files list ]</info>\n");
 
-        try{
+        try {
             $options = ServiceFileFinderOptions::fromArray([
                 'directories' => explode(',', $input->getOption('scan-directories')),
-                'files' => explode(',', $input->getOption('scan-files'))
+                'files' => explode(',', $input->getOption('scan-files')),
             ]);
 
             $finder = new ServiceFileFinder($options);
 
             $files = $finder->find();
-
-        }catch(NoFilesFoundException $e){
+        } catch (NoFilesFoundException $e) {
             $output->writeln("\n<error>{$e->getMessage()}</error>\n");
 
             return;
@@ -87,12 +87,11 @@ class PrintServiceFilesCommand extends SymfonyCommand
         /**
          * @var FileInfo $file
          */
-        foreach($files as $file){
+        foreach ($files as $file) {
             $total++;
             $output->writeln($file->getRealPath());
         }
 
         $output->writeln("\n<info>Total files: $total</info>");
     }
-
 }
