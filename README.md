@@ -3,12 +3,12 @@
 Builds a Symfony container from a collection of service files found in different directories
 The service files themselves can be written in different formats (yml, xml, ini or php)
 
-This builder will normalize all of those files to one format (yml, xml, ini or php)
+This builder will compile all of those files to one format (yml, xml, ini or php)
 
-##### Example 1, find all services.xml or services.yml files in project directory, write result as out.xml
+##### Find all services.xml, services.ini, services.yml, services.php files on a directory, write result as out.xml
 
 ```
-php bin/build container:build out.xml xml -d /path/to/your/project -l services.xml, services.yml 
+php bin/build container:build out.xml /path/to/your/project 
 ```
 
 ##### Example 2, find all services.xml, load first custom1.xml and custom2.xml

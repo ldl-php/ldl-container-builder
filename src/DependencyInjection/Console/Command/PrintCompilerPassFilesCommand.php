@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Console\Command;
 
-use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
-use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFinderOptions;
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFileFinder;
 use LDL\DependencyInjection\CompilerPass\Finder\Exception\NoFilesFoundException;
+use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFileFinderOptions;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,9 +17,9 @@ class PrintCompilerPassFilesCommand extends SymfonyCommand
 {
     public const COMMAND_NAME = 'cpass:print';
 
-    public function configure() : void
+    public function configure(): void
     {
-        $defaults = CompilerPassFinderOptions::fromArray([]);
+        $defaults = CompilerPassFileFinderOptions::fromArray([]);
 
         $defaultDirectories = implode(', ', $defaults->getDirectories());
 
@@ -49,9 +51,11 @@ class PrintCompilerPassFilesCommand extends SymfonyCommand
     {
         try {
             $this->printFiles($input, $output);
+
             return 0;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
+
             return 1;
         }
     }
@@ -59,25 +63,23 @@ class PrintCompilerPassFilesCommand extends SymfonyCommand
     private function printFiles(
         InputInterface $input,
         OutputInterface $output
-    ) : void
-    {
+    ): void {
         $total = 0;
 
         $output->writeln("<info>[ Services files list ]</info>\n");
 
         $pattern = $input->getOption('scan-pattern');
 
-        try{
-            $options = CompilerPassFinderOptions::fromArray([
+        try {
+            $options = CompilerPassFileFinderOptions::fromArray([
                 'directories' => explode(',', $input->getOption('scan-directories')),
-                'patterns' => null !== $pattern ? explode(',', $pattern) : CompilerPassFinderOptions::DEFAULT_CPASS_PATTERNS
+                'patterns' => null !== $pattern ? explode(',', $pattern) : CompilerPassFileFinderOptions::DEFAULT_CPASS_PATTERNS,
             ]);
 
-            $finder = new CompilerPassFinder($options);
+            $finder = new CompilerPassFileFinder($options);
 
             $files = $finder->find();
-
-        }catch(NoFilesFoundException $e){
+        } catch (NoFilesFoundException $e) {
             $output->writeln("\n<error>{$e->getMessage()}</error>\n");
 
             return;
@@ -86,12 +88,11 @@ class PrintCompilerPassFilesCommand extends SymfonyCommand
         /**
          * @var FileInfo $file
          */
-        foreach($files as $file){
+        foreach ($files as $file) {
             $total++;
             $output->writeln($file->getRealPath());
         }
 
         $output->writeln("\n<info>Total files: $total</info>");
     }
-
 }

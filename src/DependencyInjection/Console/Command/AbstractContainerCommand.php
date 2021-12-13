@@ -1,19 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Console\Command;
 
-use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFinder;
-use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFinderOptions;
+use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFileFinder;
+use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFileFinderOptions;
 use LDL\DependencyInjection\CompilerPass\Reader\CompilerPassReader;
 use LDL\DependencyInjection\CompilerPass\Reader\Options\CompilerPassReaderOptions;
 use LDL\DependencyInjection\Container\Builder\LDLContainerBuilder;
 use LDL\DependencyInjection\Container\Builder\LDLContainerBuilderInterface;
 use LDL\DependencyInjection\Container\Config\ContainerConfig;
 use LDL\DependencyInjection\Container\Writer\Options\ContainerWriterOptions;
-use LDL\DependencyInjection\Service\Compiler\Options\ServiceCompilerOptions;
+use LDL\DependencyInjection\Service\Compiler\Options\CompilerPassCompilerOptions;
 use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
-use LDL\DependencyInjection\Service\Finder\Options\ServiceFileFinderOptions;
-use LDL\DependencyInjection\Service\Finder\ServiceFileFinder;
+use LDL\DependencyInjection\Service\File\Finder\Options\ServiceFileFinderOptions;
+use LDL\DependencyInjection\Service\File\Finder\ServiceFileFinder;
 use LDL\DependencyInjection\Service\Reader\Options\ServiceReaderOptions;
 use LDL\DependencyInjection\Service\Reader\ServiceFileReader;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -38,10 +40,10 @@ abstract class AbstractContainerCommand extends SymfonyCommand
      */
     protected $dumpOptions = ContainerConfig::DEFAULT_DUMP_OPTIONS;
 
-    public function configure() : void
+    public function configure(): void
     {
         $finderDefaults = ServiceFileFinderOptions::fromArray([]);
-        $cpassDefaults = CompilerPassFinderOptions::fromArray([]);
+        $cpassDefaults = CompilerPassFileFinderOptions::fromArray([]);
         $containerWriter = ContainerWriterOptions::fromArray([]);
 
         $this->addArgument(
@@ -121,15 +123,13 @@ abstract class AbstractContainerCommand extends SymfonyCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-
             $this->build($input, $output);
+
             return self::EXIT_SUCCESS;
-
-        }catch(\Exception $e){
-
+        } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
-            return self::EXIT_ERROR;
 
+            return self::EXIT_ERROR;
         }
     }
 
@@ -142,15 +142,15 @@ abstract class AbstractContainerCommand extends SymfonyCommand
         $containerName = $input->getOption('className');
         $containerFormat = $input->getOption('format');
 
-        if(null !== $containerNamespace){
+        if (null !== $containerNamespace) {
             $this->dumpOptions['namespace'] = $containerNamespace;
         }
 
-        if(null !== $containerName){
+        if (null !== $containerName) {
             $this->dumpOptions['class'] = $containerName;
         }
 
-        if(null !== $containerFormat){
+        if (null !== $containerFormat) {
             $this->dumpOptions['format'] = $containerFormat;
         }
 
@@ -161,40 +161,40 @@ abstract class AbstractContainerCommand extends SymfonyCommand
             'directories' => explode(',', $input->getOption('scan-directories')),
             'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : [],
             'files' => explode(',', $input->getOption('scan-files')),
-            'findFirst' => null !== $findFirst ? explode(',', $findFirst) : []
+            'findFirst' => null !== $findFirst ? explode(',', $findFirst) : [],
         ]);
 
-        $serviceCompilerOptions = ServiceCompilerOptions::fromArray([
-            'onBeforeCompile' => function($container, $files) use ($compilerProgress){
+        $serviceCompilerOptions = CompilerPassCompilerOptions::fromArray([
+            'onBeforeCompile' => function ($container, $files) use ($compilerProgress) {
                 $compilerProgress->setMaxSteps(count($files));
             },
-            'onCompile' => function($container, $file) use ($compilerProgress){
+            'onCompile' => function ($container, $file) use ($compilerProgress) {
                 $compilerProgress->advance();
             },
-            'onAfterCompile' => function($file, $vars) use ($compilerProgress){
+            'onAfterCompile' => function ($file, $vars) use ($compilerProgress) {
                 $compilerProgress->finish();
-            }
+            },
         ]);
 
         $serviceReaderOptions = ServiceReaderOptions::fromArray([
-            'ignoreErrors' => (bool)$input->getOption('ignore-read-errors')
+            'ignoreErrors' => (bool) $input->getOption('ignore-read-errors'),
         ]);
 
-        $compilerPassFinderOptions = CompilerPassFinderOptions::fromArray([
-            'patterns' => null !== $cpassPattern ? explode(',', $cpassPattern) : CompilerPassFinderOptions::DEFAULT_CPASS_PATTERNS,
+        $compilerPassFinderOptions = CompilerPassFileFinderOptions::fromArray([
+            'patterns' => null !== $cpassPattern ? explode(',', $cpassPattern) : CompilerPassFileFinderOptions::DEFAULT_CPASS_PATTERNS,
             'directories' => explode(',', $input->getOption('scan-directories')),
-            'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : []
+            'excludedDirectories' => null !== $excludedDirectories ? explode(',', $excludedDirectories) : [],
         ]);
 
         $compilerPassReaderOptions = CompilerPassReaderOptions::fromArray([
-            'ignoreErrors' => (bool)$input->getOption('ignore-read-errors')
+            'ignoreErrors' => (bool) $input->getOption('ignore-read-errors'),
         ]);
 
         $this->container = new LDLContainerBuilder(
             new ServiceFileFinder($serviceFinderOptions),
             new ServiceCompiler($serviceCompilerOptions),
             new ServiceFileReader($serviceReaderOptions),
-            new CompilerPassFinder($compilerPassFinderOptions),
+            new CompilerPassFileFinder($compilerPassFinderOptions),
             new CompilerPassReader($compilerPassReaderOptions)
         );
     }
