@@ -12,7 +12,6 @@ use LDL\File\Validator\FileNameValidator;
 use LDL\File\Validator\FileTypeValidator;
 use LDL\File\Validator\PathValidator;
 use LDL\Framework\Base\Collection\CallableCollectionInterface;
-use LDL\Type\Collection\Types\String\StringCollection;
 use LDL\Validators\Chain\AndValidatorChain;
 use LDL\Validators\Chain\OrValidatorChain;
 
@@ -94,13 +93,7 @@ class ServiceFileFinder implements ServiceFileFinderInterface
         $foundFiles = iterator_to_array($finder->find($this->options->getDirectories()), false);
 
         if (!count($foundFiles)) {
-            $msg = sprintf(
-                'No files were found matching: "%s" in directories: "%s"',
-                $options->getFiles(),
-                new StringCollection($options->getDirectories())
-            );
-
-            throw new Exception\NoFilesFoundException($msg);
+            return $files;
         }
 
         /**
