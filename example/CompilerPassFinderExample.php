@@ -12,7 +12,7 @@ echo "Find compiler passes, no exception must be thrown\n\n";
 
 $finder = new CompilerPassFileFinder(
     CompilerPassFileFinderOptions::fromArray([
-    'directories' => [__DIR__.'/Build'],
+        'directories' => [__DIR__.'/Build'],
     ]),
     new CallableCollection([
         static function ($c) {

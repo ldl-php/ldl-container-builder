@@ -1,13 +1,22 @@
 Try to build container, in the first build, an exception will be thrown since we add a compiler directive
 which detects duplicate service id's
 
-OK EXCEPTION: Service id "LDL.example.application.admin" was already defined in file "/home/ldl/projects/ldl-container-builder/example/Build/Application/Admin/services.xml", and redefined in file: "/home/ldl/projects/ldl-container-builder/example/Build/Application/User/services.xml")Try to build container again, this time, without duplicate service id detection
+Found service file /home/ldl/projects/ldl-container-builder/example/Build/Application/Admin/services.xml
+Found service file /home/ldl/projects/ldl-container-builder/example/Build/Application/User/services.xml
+Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Mailer/services.xml
+Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Template/services.xml
+Found compiler pass: /home/ldl/projects/ldl-container-builder/example/Build/Framework/Application/ApplicationCompilerPass.php
+
+
+OK EXCEPTION: Service id "LDL.example.application.admin" was already defined in file "/home/ldl/projects/ldl-container-builder/example/Build/Application/Admin/services.xml", and redefined in file: "/home/ldl/projects/ldl-container-builder/example/Build/Application/User/services.xml")
+
+Try to build container again, this time, without duplicate service id detection
 
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Application/Admin/services.xml
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Application/User/services.xml
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Mailer/services.xml
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Template/services.xml
-Found compiler pass file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Application/ApplicationCompilerPass.php
+Found compiler pass: /home/ldl/projects/ldl-container-builder/example/Build/Framework/Application/ApplicationCompilerPass.php
 <?php
 
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;

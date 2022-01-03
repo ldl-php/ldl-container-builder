@@ -46,10 +46,12 @@ class LDLContainerBuilder implements LDLContainerBuilderInterface
             $compilerPassFiles
         );
 
-        $this->compilerPassCompiler->compile(
-            $builder,
-            $compilerPassFiles
-        );
+        if (null !== $compilerPassFiles) {
+            $this->compilerPassCompiler->compile(
+                $builder,
+                $compilerPassFiles
+            );
+        }
 
         return $builder;
     }

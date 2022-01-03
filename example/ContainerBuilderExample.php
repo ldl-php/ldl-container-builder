@@ -20,57 +20,57 @@ use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 echo "Try to build container, in the first build, an exception will be thrown since we add a compiler directive\n";
 echo "which detects duplicate service id's\n\n";
 
+$serviceFileFinder = new ServiceFileFinder(
+    ServiceFileFinderOptions::fromArray([
+        'directories' => [__DIR__.'/Build'],
+    ]),
+    new CallableCollection([
+        static function ($f) {
+            echo "Found service file $f\n";
+        },
+    ])
+);
+
+$compilerPassFinder = new CompilerPassFileFinder(
+    CompilerPassFileFinderOptions::fromArray([
+        'directories' => [__DIR__.'/Build'],
+    ]),
+    new CallableCollection([
+        static function ($c) {
+            echo "Found compiler pass: $c\n";
+        },
+    ])
+);
+
 try {
     $builder = new LDLContainerBuilder(
-        new ServiceFileFinder(ServiceFileFinderOptions::fromArray([
-            'directories' => [__DIR__.'/Build'],
-        ])),
         new ServiceCompiler(
             new ServiceCompilerDirectiveCollection([
                 new DuplicateServiceCompilerDirective(),
             ])
         ),
-        new CompilerPassFileFinder(
-            CompilerPassFileFinderOptions::fromArray([
-                'directories' => [__DIR__.'/Build'],
-            ])
-        ),
         new CompilerPassCompiler()
     );
 
-    $container = $builder->build();
+    $container = $builder->build(
+        $serviceFileFinder->find(),
+        $compilerPassFinder->find()
+    );
 } catch (DuplicateServiceIdException $e) {
-    echo "OK EXCEPTION: {$e->getMessage()})";
+    echo "\n\nOK EXCEPTION: {$e->getMessage()})\n\n";
 }
 
 echo "Try to build container again, this time, without duplicate service id detection\n\n";
 
 $builder = new LDLContainerBuilder(
-    new ServiceFileFinder(
-        ServiceFileFinderOptions::fromArray([
-            'directories' => [__DIR__.'/Build'],
-        ]),
-        new CallableCollection([
-            static function ($f) {
-                echo "Found service file $f\n";
-            },
-        ])
-    ),
     new ServiceCompiler(),
-    new CompilerPassFileFinder(
-        CompilerPassFileFinderOptions::fromArray([
-            'directories' => [__DIR__.'/Build'],
-        ]),
-        new CallableCollection([
-            static function ($f) {
-                echo "Found compiler pass file $f\n";
-            },
-        ])
-    ),
     new CompilerPassCompiler()
 );
 
-$container = $builder->build();
+$container = $builder->build(
+    $serviceFileFinder->find(),
+    $compilerPassFinder->find()
+);
 
 $dumper = new PhpDumper($container);
 echo $dumper->dump()."\n";
