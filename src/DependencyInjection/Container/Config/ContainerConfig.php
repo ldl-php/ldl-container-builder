@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Container\Config;
 
+use LDL\DependencyInjection\Interfaces\JSONOptionsInterface;
 use LDL\DependencyInjection\Interfaces\OptionsInterface;
+use LDL\DependencyInjection\Interfaces\WriteOptionsInterface;
+use LDL\File\Contracts\FileInterface;
+use LDL\File\File;
 
-class ContainerConfig implements OptionsInterface
+class ContainerConfig implements OptionsInterface, WriteOptionsInterface, JSONOptionsInterface
 {
     public const DEFAULT_CONTAINER_FILENAME = 'container.php';
 
@@ -283,5 +287,25 @@ class ContainerConfig implements OptionsInterface
         $this->date = $date;
 
         return $this;
+    }
+
+    public function write(string $path, bool $overwrite = true): FileInterface
+    {
+        return File::create(
+            $path,
+            json_encode($this, \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT),
+            0644,
+            $overwrite
+        );
+    }
+
+    public static function fromJSONFile(string $file): ContainerConfig
+    {
+        return self::fromJSON((new File($file))->getLinesAsString());
+    }
+
+    public static function fromJSON(string $json): ContainerConfig
+    {
+        return self::fromArray(json_decode($json, true, 2048, \JSON_THROW_ON_ERROR));
     }
 }
