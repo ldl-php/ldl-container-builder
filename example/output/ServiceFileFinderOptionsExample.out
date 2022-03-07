@@ -1,0 +1,28 @@
+Test ServiceFileFinderOptions
+
+array:4 [
+  "directories" => array:1 [
+    0 => "/home/ldl/projects/ldl-container-builder/example/Build"
+  ]
+  "files" => array:4 [
+    0 => "services.xml"
+    1 => "services.yml"
+    2 => "services.php"
+    3 => "services.ini"
+  ]
+  "excludedFiles" => []
+  "excludedDirectories" => []
+]
+array:4 [
+  "directories" => array:1 [
+    0 => "/home/ldl/projects/ldl-container-builder/example/Build"
+  ]
+  "files" => array:4 [
+    0 => "services.xml"
+    1 => "services.yml"
+    2 => "services.php"
+    3 => "services.ini"
+  ]
+  "excludedFiles" => []
+  "excludedDirectories" => []
+]

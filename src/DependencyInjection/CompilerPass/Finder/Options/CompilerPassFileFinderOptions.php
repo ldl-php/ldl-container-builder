@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Finder\Options;
 
+use LDL\DependencyInjection\Interfaces\JSONOptionsInterface;
 use LDL\DependencyInjection\Interfaces\OptionsInterface;
+use LDL\DependencyInjection\Interfaces\WriteOptionsInterface;
+use LDL\File\Contracts\FileInterface;
+use LDL\File\File;
+use LDL\Framework\Helper\IterableHelper;
+use LDL\Type\Collection\Interfaces\Type\ToPrimitiveArrayInterface;
 use LDL\Type\Collection\Types\String\StringCollection;
 
-class CompilerPassFileFinderOptions implements OptionsInterface
+class CompilerPassFileFinderOptions implements OptionsInterface, WriteOptionsInterface, JSONOptionsInterface
 {
     public const DEFAULT_FILE_PATTERN = '#^.*CompilerPass.php$#';
 
@@ -47,7 +53,9 @@ class CompilerPassFileFinderOptions implements OptionsInterface
 
     public function toArray(bool $useKeys = null): array
     {
-        return get_object_vars($this);
+        return IterableHelper::map(get_object_vars($this), static function (ToPrimitiveArrayInterface $v, $k): array {
+            return $v->toPrimitiveArray(false);
+        });
     }
 
     public function jsonSerialize(): array
@@ -73,5 +81,25 @@ class CompilerPassFileFinderOptions implements OptionsInterface
     public function getPatterns(): StringCollection
     {
         return $this->patterns;
+    }
+
+    public function write(string $path, bool $overwrite = true): FileInterface
+    {
+        return File::create(
+            $path,
+            json_encode($this, \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT),
+            0644,
+            $overwrite
+        );
+    }
+
+    public static function fromJSONFile(string $file): CompilerPassFileFinderOptions
+    {
+        return self::fromJSON((new File($file))->getLinesAsString());
+    }
+
+    public static function fromJSON(string $json): CompilerPassFileFinderOptions
+    {
+        return self::fromArray(json_decode($json, true, 2048, \JSON_THROW_ON_ERROR));
     }
 }

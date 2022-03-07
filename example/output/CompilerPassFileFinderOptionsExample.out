@@ -1,0 +1,22 @@
+This example finds compiler passes and compiles them
+
+array:4 [
+  "directories" => array:1 [
+    0 => "/home/ldl/projects/ldl-container-builder/example/Build"
+  ]
+  "excludedDirectories" => []
+  "excludedFiles" => []
+  "patterns" => array:1 [
+    0 => "#^.*CompilerPass.php$#"
+  ]
+]
+array:4 [
+  "directories" => array:1 [
+    0 => "/home/ldl/projects/ldl-container-builder/example/Build"
+  ]
+  "excludedDirectories" => []
+  "excludedFiles" => []
+  "patterns" => array:1 [
+    0 => "#^.*CompilerPass.php$#"
+  ]
+]

@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- feature/1201930284829936 - Add write to different option classes
 - feature/1201509919633570 - Partial rewrite of compiler / finder logic
 
 

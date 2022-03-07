@@ -39,6 +39,6 @@ final class ContainerHelper
                 break;
         }
 
-        return File::create($file, $dumper->dump($options), null, true);
+        return File::create($file, $dumper->dump($options), 0644, true);
     }
 }
