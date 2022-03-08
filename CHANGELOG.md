@@ -14,5 +14,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- fix/1201934743393893 - Fix composer binary
 - fix/1201610905745301 - Fix examples
 
