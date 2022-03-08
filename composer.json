@@ -33,6 +33,6 @@
         }
     },
     "bin": [
-        "bin/build"
+        "bin/ldl-container-builder"
     ]
 }
