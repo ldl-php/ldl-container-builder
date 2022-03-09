@@ -10,5 +10,5 @@ interface CompilerPassFileFinderInterface
 {
     public function find(): CompilerPassFileCollection;
 
-    public function getOptions(): Options\CompilerPassFileFinderOptions;
+    public function getOptions(): Options\CompilerPassFileFinderOptionsInterface;
 }

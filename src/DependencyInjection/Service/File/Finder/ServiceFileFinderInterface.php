@@ -10,5 +10,5 @@ interface ServiceFileFinderInterface
 {
     public function find(): ServiceFileCollection;
 
-    public function getOptions(): Options\ServiceFileFinderOptions;
+    public function getOptions(): Options\ServiceFileFinderOptionsInterface;
 }
