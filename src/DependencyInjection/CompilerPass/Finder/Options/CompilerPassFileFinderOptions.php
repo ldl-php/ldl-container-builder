@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Finder\Options;
 
-use LDL\DependencyInjection\Interfaces\JSONOptionsInterface;
-use LDL\DependencyInjection\Interfaces\OptionsInterface;
-use LDL\DependencyInjection\Interfaces\WriteOptionsInterface;
 use LDL\File\Contracts\FileInterface;
 use LDL\File\File;
+use LDL\Framework\Base\Exception\JsonFactoryException;
 use LDL\Framework\Helper\IterableHelper;
 use LDL\Type\Collection\Interfaces\Type\ToPrimitiveArrayInterface;
 use LDL\Type\Collection\Types\String\StringCollection;
 
-class CompilerPassFileFinderOptions implements OptionsInterface, WriteOptionsInterface, JSONOptionsInterface
+class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInterface
 {
     public const DEFAULT_FILE_PATTERN = '#^.*CompilerPass.php$#';
 
@@ -93,13 +91,21 @@ class CompilerPassFileFinderOptions implements OptionsInterface, WriteOptionsInt
         );
     }
 
-    public static function fromJSONFile(string $file): CompilerPassFileFinderOptions
+    public static function fromJsonFile(string $file): CompilerPassFileFinderOptionsInterface
     {
-        return self::fromJSON((new File($file))->getLinesAsString());
+        try {
+            return self::fromJsonString((new File($file))->getLinesAsString());
+        } catch (\Throwable $e) {
+            throw new JsonFactoryException("Could not create instance from file $file");
+        }
     }
 
-    public static function fromJSON(string $json): CompilerPassFileFinderOptions
+    public static function fromJsonString(string $json): CompilerPassFileFinderOptionsInterface
     {
-        return self::fromArray(json_decode($json, true, 2048, \JSON_THROW_ON_ERROR));
+        try {
+            return self::fromArray(json_decode($json, true, 2048, \JSON_THROW_ON_ERROR));
+        } catch (\Throwable $e) {
+            throw new JsonFactoryException("Could not create instance from json string $json");
+        }
     }
 }

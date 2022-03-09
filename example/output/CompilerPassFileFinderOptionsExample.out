@@ -1,4 +1,4 @@
-This example finds compiler passes and compiles them
+This example tests CompilerPassFileFinderOptions
 
 array:4 [
   "directories" => array:1 [
@@ -10,6 +10,9 @@ array:4 [
     0 => "#^.*CompilerPass.php$#"
   ]
 ]
+
+Recreate options from JSON file:
+
 array:4 [
   "directories" => array:1 [
     0 => "/home/ldl/projects/ldl-container-builder/example/Build"
