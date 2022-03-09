@@ -39,7 +39,7 @@ class CompilerPassFileFinder implements CompilerPassFileFinderInterface
     private $onFile;
 
     public function __construct(
-        Options\CompilerPassFileFinderOptions $options,
+        Options\CompilerPassFileFinderOptionsInterface $options,
         CallableCollectionInterface $onCompilerPassFileFound = null,
         CallableCollectionInterface $onReject = null,
         CallableCollectionInterface $onFile = null
@@ -100,7 +100,7 @@ class CompilerPassFileFinder implements CompilerPassFileFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions(): Options\CompilerPassFileFinderOptions
+    public function getOptions(): Options\CompilerPassFileFinderOptionsInterface
     {
         return $this->options;
     }

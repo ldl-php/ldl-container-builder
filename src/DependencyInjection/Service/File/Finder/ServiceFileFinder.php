@@ -38,7 +38,7 @@ class ServiceFileFinder implements ServiceFileFinderInterface
     private $onFile;
 
     public function __construct(
-        Options\ServiceFileFinderOptions $options,
+        Options\ServiceFileFinderOptionsInterface $options,
         CallableCollectionInterface $onServiceFileFound = null,
         CallableCollectionInterface $onFile = null,
         CallableCollectionInterface $onReject = null
@@ -109,7 +109,7 @@ class ServiceFileFinder implements ServiceFileFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions(): Options\ServiceFileFinderOptions
+    public function getOptions(): Options\ServiceFileFinderOptionsInterface
     {
         return $this->options;
     }
