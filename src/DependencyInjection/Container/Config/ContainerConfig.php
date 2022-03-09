@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Container\Config;
 
-use LDL\DependencyInjection\Interfaces\JSONOptionsInterface;
-use LDL\DependencyInjection\Interfaces\OptionsInterface;
-use LDL\DependencyInjection\Interfaces\WriteOptionsInterface;
 use LDL\File\Contracts\FileInterface;
 use LDL\File\File;
 
-class ContainerConfig implements OptionsInterface, WriteOptionsInterface, JSONOptionsInterface
+class ContainerConfig implements ContainerConfigInterface
 {
     public const DEFAULT_CONTAINER_FILENAME = 'container.php';
 

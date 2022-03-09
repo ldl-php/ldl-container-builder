@@ -17,7 +17,7 @@ dump($options->toArray());
 
 $dir = DirectoryHelper::getSysTempDir();
 $file = $options->write($dir->mkpath('service_file_finder_options.json'));
-$options = ServiceFileFinderOptions::fromJSONFile((string) $file);
+$options = ServiceFileFinderOptions::fromJsonFile((string) $file);
 
 dump($options->toArray());
 

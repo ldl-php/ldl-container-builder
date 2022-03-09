@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\File\Finder\Options;
 
-use LDL\DependencyInjection\Interfaces\JSONOptionsInterface;
-use LDL\DependencyInjection\Interfaces\OptionsInterface;
-use LDL\DependencyInjection\Interfaces\WriteOptionsInterface;
 use LDL\File\Collection\DirectoryCollection;
 use LDL\File\Contracts\DirectoryInterface;
 use LDL\File\Contracts\FileInterface;
 use LDL\File\File;
+use LDL\Framework\Base\Exception\JsonFactoryException;
 use LDL\Framework\Helper\IterableHelper;
 use LDL\Type\Collection\Types\String\StringCollection;
 
-class ServiceFileFinderOptions implements OptionsInterface, WriteOptionsInterface, JSONOptionsInterface
+class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
 {
     /**
      * @var DirectoryCollection
@@ -106,13 +104,21 @@ class ServiceFileFinderOptions implements OptionsInterface, WriteOptionsInterfac
         );
     }
 
-    public static function fromJSONFile(string $file): ServiceFileFinderOptions
+    public static function fromJsonFile(string $file): ServiceFileFinderOptions
     {
-        return self::fromJSON((new File($file))->getLinesAsString());
+        try {
+            return self::fromJsonString((new File($file))->getLinesAsString());
+        } catch (\Throwable $e) {
+            throw new JsonFactoryException("Could not create instance from file $file");
+        }
     }
 
-    public static function fromJSON(string $json): ServiceFileFinderOptions
+    public static function fromJsonString(string $json): ServiceFileFinderOptions
     {
-        return self::fromArray(json_decode($json, true, 2048, \JSON_THROW_ON_ERROR));
+        try {
+            return self::fromArray(json_decode($json, true, 2048, \JSON_THROW_ON_ERROR));
+        } catch (\Throwable $e) {
+            throw new JsonFactoryException("Could not create instance from json string: $json");
+        }
     }
 }
