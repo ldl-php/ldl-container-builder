@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\Service\File\Finder\Options;
 
+use LDL\File\Collection\Contracts\DirectoryCollectionInterface;
 use LDL\File\Collection\DirectoryCollection;
-use LDL\File\Contracts\DirectoryInterface;
 use LDL\File\Contracts\FileInterface;
+use LDL\File\Exception\FileExistsException;
 use LDL\File\File;
 use LDL\Framework\Base\Exception\JsonFactoryException;
-use LDL\Framework\Helper\IterableHelper;
+use LDL\Type\Collection\Interfaces\Type\StringCollectionInterface;
 use LDL\Type\Collection\Types\String\StringCollection;
 
 class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
@@ -57,12 +58,13 @@ class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
         return $instance;
     }
 
+    /**
+     * @throws FileExistsException
+     */
     public function toArray(bool $userKeys = null): array
     {
         return [
-            'directories' => IterableHelper::map($this->directories, static function (DirectoryInterface $d): string {
-                return $d->getPath();
-            }),
+            'directories' => iterator_to_array($this->directories->getRealPaths()),
             'files' => $this->files->toPrimitiveArray(false),
             'excludedFiles' => $this->excludedFiles->toPrimitiveArray(false),
             'excludedDirectories' => $this->excludedDirectories->toPrimitiveArray(false),
@@ -74,22 +76,22 @@ class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
         return $this->toArray();
     }
 
-    public function getDirectories(): DirectoryCollection
+    public function getDirectories(): DirectoryCollectionInterface
     {
         return $this->directories;
     }
 
-    public function getExcludedDirectories(): StringCollection
+    public function getExcludedDirectories(): StringCollectionInterface
     {
         return $this->excludedDirectories;
     }
 
-    public function getExcludedFiles(): StringCollection
+    public function getExcludedFiles(): StringCollectionInterface
     {
         return $this->excludedFiles;
     }
 
-    public function getFiles(): StringCollection
+    public function getFiles(): StringCollectionInterface
     {
         return $this->files;
     }

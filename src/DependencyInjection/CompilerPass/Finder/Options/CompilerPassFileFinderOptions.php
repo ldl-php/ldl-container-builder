@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Finder\Options;
 
+use LDL\File\Collection\Contracts\DirectoryCollectionInterface;
+use LDL\File\Collection\DirectoryCollection;
 use LDL\File\Contracts\FileInterface;
 use LDL\File\File;
 use LDL\Framework\Base\Exception\JsonFactoryException;
-use LDL\Framework\Helper\IterableHelper;
-use LDL\Type\Collection\Interfaces\Type\ToPrimitiveArrayInterface;
+use LDL\Type\Collection\Interfaces\Type\StringCollectionInterface;
 use LDL\Type\Collection\Types\String\StringCollection;
 
 class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInterface
@@ -16,7 +17,7 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
     public const DEFAULT_FILE_PATTERN = '#^.*CompilerPass.php$#';
 
     /**
-     * @var StringCollection
+     * @var DirectoryCollectionInterface
      */
     private $directories = [];
 
@@ -41,7 +42,7 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
         $defaults = get_object_vars($instance);
         $merge = array_merge($defaults, $options);
 
-        $instance->directories = new StringCollection($merge['directories']);
+        $instance->directories = new DirectoryCollection($merge['directories']);
         $instance->excludedDirectories = (new StringCollection($merge['excludedDirectories']))->filterEmptyLines();
         $instance->excludedFiles = (new StringCollection($merge['excludedFiles']))->filterEmptyLines();
         $instance->patterns = new StringCollection($merge['patterns']);
@@ -51,9 +52,12 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
 
     public function toArray(bool $useKeys = null): array
     {
-        return IterableHelper::map(get_object_vars($this), static function (ToPrimitiveArrayInterface $v, $k): array {
-            return $v->toPrimitiveArray(false);
-        });
+        return [
+            'directories' => iterator_to_array($this->directories->getRealPaths()),
+            'patterns' => $this->patterns->toPrimitiveArray(false),
+            'excludedFiles' => $this->excludedFiles->toPrimitiveArray(false),
+            'excludedDirectories' => $this->excludedDirectories->toPrimitiveArray(false),
+        ];
     }
 
     public function jsonSerialize(): array
@@ -61,22 +65,22 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
         return $this->toArray();
     }
 
-    public function getDirectories(): StringCollection
+    public function getDirectories(): DirectoryCollectionInterface
     {
         return $this->directories;
     }
 
-    public function getExcludedDirectories(): StringCollection
+    public function getExcludedDirectories(): StringCollectionInterface
     {
         return $this->excludedDirectories;
     }
 
-    public function getExcludedFiles(): StringCollection
+    public function getExcludedFiles(): StringCollectionInterface
     {
         return $this->excludedFiles;
     }
 
-    public function getPatterns(): StringCollection
+    public function getPatterns(): StringCollectionInterface
     {
         return $this->patterns;
     }
