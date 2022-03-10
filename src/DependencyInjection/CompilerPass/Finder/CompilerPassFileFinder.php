@@ -97,9 +97,6 @@ class CompilerPassFileFinder implements CompilerPassFileFinderInterface
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getOptions(): Options\CompilerPassFileFinderOptionsInterface
     {
         return $this->options;

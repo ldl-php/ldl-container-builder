@@ -4,11 +4,11 @@ array:4 [
   "directories" => array:1 [
     0 => "/home/ldl/projects/ldl-container-builder/example/Build"
   ]
-  "excludedDirectories" => []
-  "excludedFiles" => []
   "patterns" => array:1 [
     0 => "#^.*CompilerPass.php$#"
   ]
+  "excludedFiles" => []
+  "excludedDirectories" => []
 ]
 
 Recreate options from JSON file:
@@ -17,9 +17,9 @@ array:4 [
   "directories" => array:1 [
     0 => "/home/ldl/projects/ldl-container-builder/example/Build"
   ]
-  "excludedDirectories" => []
-  "excludedFiles" => []
   "patterns" => array:1 [
     0 => "#^.*CompilerPass.php$#"
   ]
+  "excludedFiles" => []
+  "excludedDirectories" => []
 ]
