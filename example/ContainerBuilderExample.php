@@ -8,6 +8,7 @@ use LDL\DependencyInjection\CompilerPass\Compiler\CompilerPassCompiler;
 use LDL\DependencyInjection\CompilerPass\Finder\CompilerPassFileFinder;
 use LDL\DependencyInjection\CompilerPass\Finder\Options\CompilerPassFileFinderOptions;
 use LDL\DependencyInjection\Container\Builder\LDLContainerBuilder;
+use LDL\DependencyInjection\Container\Dumper\LDLContainerDumper;
 use LDL\DependencyInjection\Service\Compiler\Directive\Collection\ServiceCompilerDirectiveCollection;
 use LDL\DependencyInjection\Service\Compiler\Directive\DuplicateServiceCompilerDirective;
 use LDL\DependencyInjection\Service\Compiler\Directive\Exception\DuplicateServiceIdException;
@@ -15,7 +16,6 @@ use LDL\DependencyInjection\Service\Compiler\ServiceCompiler;
 use LDL\DependencyInjection\Service\File\Finder\Options\ServiceFileFinderOptions;
 use LDL\DependencyInjection\Service\File\Finder\ServiceFileFinder;
 use LDL\Framework\Base\Collection\CallableCollection;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 
 echo "Try to build container, in the first build, an exception will be thrown since we add a compiler directive\n";
 echo "which detects duplicate service id's\n\n";
@@ -67,10 +67,10 @@ $builder = new LDLContainerBuilder(
     new CompilerPassCompiler()
 );
 
-$container = $builder->build(
-    $serviceFileFinder->find(),
-    $compilerPassFinder->find()
+echo LDLContainerDumper::dump(
+    LDLContainerDumper::DUMP_FORMAT_PHP,
+    $builder->build(
+        $serviceFileFinder->find(),
+        $compilerPassFinder->find()
+    )
 );
-
-$dumper = new PhpDumper($container);
-echo $dumper->dump()."\n";
