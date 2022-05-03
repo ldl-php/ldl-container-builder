@@ -40,22 +40,29 @@ class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
         'services.ini',
     ];
 
-    private function __construct()
-    {
+    private function __construct(
+        DirectoryCollectionInterface $directories = null,
+        StringCollectionInterface $files = null,
+        StringCollectionInterface $excludedDirectories = null,
+        StringCollectionInterface $excludedFiles = null
+    ) {
+        $this->directories = $directories ?? new DirectoryCollection();
+        $this->files = $files ?? new StringCollection();
+        $this->excludedDirectories = $excludedDirectories ?? new DirectoryCollection();
+        $this->excludedFiles = $excludedFiles ?? new StringCollection();
     }
 
     public static function fromArray(array $options): self
     {
-        $instance = new static();
-        $defaults = get_object_vars($instance);
+        $defaults = get_class_vars(__CLASS__);
         $merge = array_merge($defaults, $options);
 
-        $instance->directories = new DirectoryCollection($merge['directories']);
-        $instance->files = (new StringCollection($merge['files']))->filterEmptyLines();
-        $instance->excludedDirectories = (new StringCollection($merge['excludedDirectories']))->filterEmptyLines();
-        $instance->excludedFiles = (new StringCollection($merge['excludedFiles']))->filterEmptyLines();
-
-        return $instance;
+        return new self(
+          new DirectoryCollection($merge['directories']),
+          new StringCollection($merge['files']),
+          new StringCollection($merge['excludedDirectories']),
+          new StringCollection($merge['excludedFiles'])
+        );
     }
 
     /**
