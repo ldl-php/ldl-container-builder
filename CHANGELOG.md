@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- fix/1202230803368576 - Fix service file finder excluded directories
 - fix/1202230300055795 - Fix Service/Cpass FinderOptions empty constructor
 - fix/1202216904076371 - Service file finder options can not be constructed from instances
 - fix/1201941481429272 - Return types in file finders

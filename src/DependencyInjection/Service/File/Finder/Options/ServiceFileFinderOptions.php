@@ -48,7 +48,7 @@ class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
     ) {
         $this->directories = $directories ?? new DirectoryCollection();
         $this->files = ($files ?? new StringCollection())->filterEmptyLines();
-        $this->excludedDirectories = $excludedDirectories ?? new DirectoryCollection();
+        $this->excludedDirectories = ($excludedDirectories ?? new StringCollection())->filterEmptyLines();
         $this->excludedFiles = ($excludedFiles ?? new StringCollection())->filterEmptyLines();
     }
 
