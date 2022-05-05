@@ -36,18 +36,28 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
      */
     private $patterns = ['#^.*CompilerPass.php$#'];
 
-    public static function fromArray(array $options): self
+    public function __construct(
+        DirectoryCollectionInterface $directories = null,
+        StringCollectionInterface $excludedDirectories = null,
+        StringCollectionInterface $excludedFiles = null,
+        StringCollection $patterns = null
+    ) {
+        $this->directories = $directories ?? new DirectoryCollection();
+        $this->excludedDirectories = ($excludedDirectories ?? new StringCollection())->filterEmptyLines();
+        $this->excludedFiles = ($excludedFiles ?? new StringCollection())->filterEmptyLines();
+        $this->patterns = ($patterns ?? new StringCollection())->filterEmptyLines();
+    }
+
+    public static function fromArray(array $options): CompilerPassFileFinderOptionsInterface
     {
-        $instance = new static();
-        $defaults = get_object_vars($instance);
-        $merge = array_merge($defaults, $options);
+        $merge = array_merge(get_class_vars(__CLASS__), $options);
 
-        $instance->directories = new DirectoryCollection($merge['directories']);
-        $instance->excludedDirectories = (new StringCollection($merge['excludedDirectories']))->filterEmptyLines();
-        $instance->excludedFiles = (new StringCollection($merge['excludedFiles']))->filterEmptyLines();
-        $instance->patterns = new StringCollection($merge['patterns']);
-
-        return $instance;
+        return new self(
+            new DirectoryCollection($merge['directories']),
+            new StringCollection($merge['excludedDirectories']),
+            new StringCollection($merge['excludedFiles']),
+            new StringCollection($merge['patterns'])
+        );
     }
 
     public function toArray(bool $useKeys = null): array
