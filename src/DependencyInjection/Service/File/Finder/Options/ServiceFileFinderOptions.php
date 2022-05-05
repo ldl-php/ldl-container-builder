@@ -40,16 +40,16 @@ class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
         'services.ini',
     ];
 
-    private function __construct(
+    public function __construct(
         DirectoryCollectionInterface $directories = null,
         StringCollectionInterface $files = null,
         StringCollectionInterface $excludedDirectories = null,
         StringCollectionInterface $excludedFiles = null
     ) {
         $this->directories = $directories ?? new DirectoryCollection();
-        $this->files = $files ?? new StringCollection();
+        $this->files = ($files ?? new StringCollection())->filterEmptyLines();
         $this->excludedDirectories = $excludedDirectories ?? new DirectoryCollection();
-        $this->excludedFiles = $excludedFiles ?? new StringCollection();
+        $this->excludedFiles = ($excludedFiles ?? new StringCollection())->filterEmptyLines();
     }
 
     public static function fromArray(array $options): self

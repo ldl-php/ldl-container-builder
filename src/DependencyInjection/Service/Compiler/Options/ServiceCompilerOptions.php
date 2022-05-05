@@ -29,16 +29,28 @@ class ServiceCompilerOptions implements OptionsInterface
      */
     private $onAfterCompile;
 
+    public function __construct(
+        CallableCollectionInterface $onBeforeCompile = null,
+        CallableCollectionInterface $onCompile = null,
+        CallableCollectionInterface $onCompileError = null,
+        CallableCollectionInterface $onAfterCompile = null
+    ) {
+        $this->onBeforeCompile = $onBeforeCompile;
+        $this->onCompile = $onCompile;
+        $this->onCompileError = $onCompileError;
+        $this->onAfterCompile = $onAfterCompile;
+    }
+
     public static function fromArray(array $options): self
     {
-        $instance = new static();
-        $defaults = get_object_vars($instance);
-        $merge = array_merge($defaults, $options);
+        $merge = array_merge(get_class_vars(__CLASS__), $options);
 
-        return $instance->setOnBeforeCompile($merge['onBeforeCompile'])
-            ->setOnCompile($merge['onCompile'])
-            ->setOnCompileError($merge['onCompileError'])
-            ->setOnAfterCompile($merge['onAfterCompile']);
+        return new self(
+            $merge['onBeforeCompile'],
+            $merge['onCompile'],
+            $merge['onCompileError'],
+            $merge['onAfterCompile']
+        );
     }
 
     public function toArray(bool $useKeys = null): array
@@ -70,34 +82,4 @@ class ServiceCompilerOptions implements OptionsInterface
     {
         return $this->onCompileError;
     }
-
-    //<editor-fold desc="Private methods">
-    private function setOnAfterCompile(CallableCollectionInterface $fn = null): ServiceCompilerOptions
-    {
-        $this->onAfterCompile = $fn;
-
-        return $this;
-    }
-
-    private function setOnCompile(CallableCollectionInterface $fn = null): ServiceCompilerOptions
-    {
-        $this->onCompile = $fn;
-
-        return $this;
-    }
-
-    private function setOnCompileError(CallableCollectionInterface $fn = null): ServiceCompilerOptions
-    {
-        $this->onCompileError = $fn;
-
-        return $this;
-    }
-
-    private function setOnBeforeCompile(CallableCollectionInterface $fn = null): ServiceCompilerOptions
-    {
-        $this->onBeforeCompile = $fn;
-
-        return $this;
-    }
-    //</editor-fold>
 }
