@@ -58,10 +58,10 @@ class ServiceFileFinderOptions implements ServiceFileFinderOptionsInterface
         $merge = array_merge($defaults, $options);
 
         return new self(
-          new DirectoryCollection($merge['directories']),
-          new StringCollection($merge['files']),
-          new StringCollection($merge['excludedDirectories']),
-          new StringCollection($merge['excludedFiles'])
+          null === $merge['directories'] ? null : new DirectoryCollection($merge['directories']),
+          null === $merge['files'] ? null : new StringCollection($merge['files']),
+          null === $merge['excludedDirectories'] ? null : new StringCollection($merge['excludedDirectories']),
+          null === $merge['excludedFiles'] ? null : new StringCollection($merge['excludedFiles'])
         );
     }
 

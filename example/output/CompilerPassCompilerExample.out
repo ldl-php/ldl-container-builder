@@ -1,5 +1,8 @@
 This example finds compiler passes and compiles them
 
+array:1 [
+  0 => "#^.*CompilerPass.php$#"
+]
 Found compiler pass /home/ldl/projects/ldl-container-builder/example/Build/Framework/Application/ApplicationCompilerPass.php ...
 
 Compiling found compiler passes, no exception must be thrown ...
