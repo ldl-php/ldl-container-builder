@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LDL\DependencyInjection\CompilerPass\Finder;
 
 use LDL\DependencyInjection\CompilerPass\File\CompilerPassFileCollection;
+use LDL\DependencyInjection\CompilerPass\File\Validator\CompilerPassFileValidator;
 use LDL\File\Constants\FileTypeConstants;
 use LDL\File\Finder\Adapter\Local\LocalFileFinderAdapter;
 use LDL\File\Validator\FileNameValidator;
@@ -56,6 +57,7 @@ class CompilerPassFileFinder implements CompilerPassFileFinderInterface
      */
     public function find(): CompilerPassFileCollection
     {
+        dump($this->options->getPatterns()->toPrimitiveArray(true));
         $validators = new AndValidatorChain();
 
         $patternChain = new OrValidatorChain();
@@ -69,6 +71,7 @@ class CompilerPassFileFinder implements CompilerPassFileFinderInterface
         $validators->getChainItems()->appendMany([
             $patternChain,
             new FileTypeValidator([FileTypeConstants::FILE_TYPE_REGULAR]),
+            new CompilerPassFileValidator(),
         ]);
 
         if (count($this->options->getExcludedDirectories()) > 0) {

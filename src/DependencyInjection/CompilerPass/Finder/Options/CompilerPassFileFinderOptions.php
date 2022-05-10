@@ -34,7 +34,7 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
     /**
      * @var StringCollection
      */
-    private $patterns = ['#^.*CompilerPass.php$#'];
+    private $patterns;
 
     public function __construct(
         DirectoryCollectionInterface $directories = null,
@@ -45,7 +45,7 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
         $this->directories = $directories ?? new DirectoryCollection();
         $this->excludedDirectories = ($excludedDirectories ?? new StringCollection())->filterEmptyLines();
         $this->excludedFiles = ($excludedFiles ?? new StringCollection())->filterEmptyLines();
-        $this->patterns = ($patterns ?? new StringCollection())->filterEmptyLines();
+        $this->patterns = ($patterns ?? new StringCollection([self::DEFAULT_FILE_PATTERN]))->filterEmptyLines();
     }
 
     public static function fromArray(array $options): CompilerPassFileFinderOptionsInterface
@@ -53,10 +53,10 @@ class CompilerPassFileFinderOptions implements CompilerPassFileFinderOptionsInte
         $merge = array_merge(get_class_vars(__CLASS__), $options);
 
         return new self(
-            new DirectoryCollection($merge['directories']),
-            new StringCollection($merge['excludedDirectories']),
-            new StringCollection($merge['excludedFiles']),
-            new StringCollection($merge['patterns'])
+            null === $merge['directories'] ? null : new DirectoryCollection($merge['directories']),
+            null === $merge['excludedDirectories'] ? null : new StringCollection($merge['excludedDirectories']),
+            null === $merge['excludedFiles'] ? null : new StringCollection($merge['excludedFiles']),
+            null === $merge['patterns'] ? null : new StringCollection($merge['patterns'])
         );
     }
 
