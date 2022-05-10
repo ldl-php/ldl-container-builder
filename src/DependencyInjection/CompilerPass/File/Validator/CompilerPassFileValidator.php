@@ -58,7 +58,7 @@ class CompilerPassFileValidator implements ValidatorInterface
         }
 
         if (!$foundClass) {
-            throw new InvalidArgumentException('Found no compiler passes on file: %s', $file->getPath());
+            throw new InvalidArgumentException(sprintf('Found no compiler passes on file: %s', $file->getPath()));
         }
     }
 }
