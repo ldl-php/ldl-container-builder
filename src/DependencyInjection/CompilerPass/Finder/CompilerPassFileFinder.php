@@ -57,7 +57,6 @@ class CompilerPassFileFinder implements CompilerPassFileFinderInterface
      */
     public function find(): CompilerPassFileCollection
     {
-        dump($this->options->getPatterns()->toPrimitiveArray(true));
         $validators = new AndValidatorChain();
 
         $patternChain = new OrValidatorChain();
