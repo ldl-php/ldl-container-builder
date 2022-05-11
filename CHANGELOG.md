@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- feature/1202261016940094 - Add eval dump format
 - feature/1201970485656753 - Array of dump options needs to be converted to a class
 - feature/1201948369036949 - Return real path on options directories
 - feature/1201930284829936 - Add write to different option classes
