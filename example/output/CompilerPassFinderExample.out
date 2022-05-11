@@ -1,8 +1,5 @@
 Find compiler passes, no exception must be thrown
 
-array:1 [
-  0 => "#^.*CompilerPass.php$#"
-]
 Found compiler pass: /home/ldl/projects/ldl-container-builder/example/Build/Framework/Application/ApplicationCompilerPass.php
 
 Found 1 files

@@ -5,9 +5,6 @@ Found service file /home/ldl/projects/ldl-container-builder/example/Build/Applic
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Application/User/services.xml
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Mailer/services.xml
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Template/services.xml
-array:1 [
-  0 => "#^.*CompilerPass.php$#"
-]
 Found compiler pass: /home/ldl/projects/ldl-container-builder/example/Build/Framework/Application/ApplicationCompilerPass.php
 
 
@@ -19,9 +16,6 @@ Found service file /home/ldl/projects/ldl-container-builder/example/Build/Applic
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Application/User/services.xml
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Mailer/services.xml
 Found service file /home/ldl/projects/ldl-container-builder/example/Build/Framework/Services/Template/services.xml
-array:1 [
-  0 => "#^.*CompilerPass.php$#"
-]
 Found compiler pass: /home/ldl/projects/ldl-container-builder/example/Build/Framework/Application/ApplicationCompilerPass.php
 <?php
 
