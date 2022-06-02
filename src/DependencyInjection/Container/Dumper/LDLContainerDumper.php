@@ -26,6 +26,10 @@ class LDLContainerDumper implements LDLContainerDumperInterface
         ContainerBuilder $container,
         ContainerDumpOptionsInterface $options = null
     ): string {
+        if (!$container->isCompiled()) {
+            $container->compile();
+        }
+
         $options = $options ?? new ContainerDumpOptions();
         $isEval = false;
 
