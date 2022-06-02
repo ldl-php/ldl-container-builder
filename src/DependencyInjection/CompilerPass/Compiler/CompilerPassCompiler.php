@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LDL\DependencyInjection\CompilerPass\Compiler;
 
@@ -13,7 +15,7 @@ class CompilerPassCompiler implements CompilerPassCompilerInterface
      */
     private $options;
 
-    public function __construct(Options\CompilerPassCompilerOptions $options=null)
+    public function __construct(Options\CompilerPassCompilerOptions $options = null)
     {
         $this->options = $options ?? Options\CompilerPassCompilerOptions::fromArray([]);
     }
@@ -21,29 +23,21 @@ class CompilerPassCompiler implements CompilerPassCompilerInterface
     public function compile(
         ContainerBuilder $container,
         CompilerPassFileCollection $compilerPasses
-    ) : void
-    {
-        if($this->options->getOnBeforeCompile()){
+    ): void {
+        if ($this->options->getOnBeforeCompile()) {
             $this->options->getOnBeforeCompile()($container, $compilerPasses);
         }
 
         /**
          * @var LDLCompilerPassInterface $compilerPass
          */
-        foreach($compilerPasses->getCompilerPassInstances() as $compilerPass){
+        foreach ($compilerPasses->getCompilerPassInstances() as $compilerPass) {
             $container->addCompilerPass($compilerPass, $compilerPass->getType(), $compilerPass->getPriority());
         }
 
-        if($this->options->getOnAfterCompile()){
+        if ($this->options->getOnAfterCompile()) {
             $this->options->getOnAfterCompile()($container, $compilerPasses);
         }
-
-        try{
-            $container->compile();
-        }catch(\Exception $e){
-            throw new Exception\CompilerPassCompilerException($e->getMessage());
-        }
-
     }
 
     /**

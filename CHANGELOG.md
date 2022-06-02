@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- fix/1202381973080659 - Compiler pass compiler compiles container when it shouldn't
 - fix/1202252911447396 - Compiler pass file finder is not using default file pattern
 - fix/1202252835115521 - Compiler pass validator throws incorrect exception
 - fix/1202230803368576 - Fix service file finder excluded directories
